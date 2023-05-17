@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CityTraffic.Models.StationList
+namespace CityTraffic.Models.YandexTimetable.StationList
 {
     public class StationList
     {
         [JsonPropertyName("countries")]
-        public List<Countries> Countries { get; set; }
+        public List<Country> Countries { get; set; }
     }
 }

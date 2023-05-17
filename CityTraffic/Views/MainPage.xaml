@@ -14,7 +14,7 @@
 
         <Button Text="Nearest stops"/>
 
-        <Button Command="{Binding GetStationListCommand}"
+        <Button Command="{Binding GetListAllStopsCommand}"
                 Text="List"/>
 
     </VerticalStackLayout>

@@ -1,60 +1,64 @@
-﻿using CityTraffic.Models.StationList;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CityTraffic.DAL;
+using CityTraffic.Models;
+using CityTraffic.Models.Interfaces;
+using CityTraffic.Services;
 using CommunityToolkit.Mvvm.Input;
-using System.Diagnostics;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Windows.System;
+using Microsoft.EntityFrameworkCore;
 
 namespace CityTraffic.ViewModels
 {
 
     public partial class MainPageViewModel : Base.ViewModel
     {
-        private HttpClient _httpClient;
-        private JsonSerializerOptions _serializerOptions;
+        private readonly CityTrafficDB _dB;
+        private readonly HttpClient _httpClient;
 
-        public StationList StationList { get; set; }
-
-        public MainPageViewModel()
+        public MainPageViewModel(CityTrafficDB dB)
         {
+            _dB = dB;
             _httpClient = new();
+
+            InitDb();
+        }
+
+        private void InitDb()
+        {
+            _dB?.Database.Migrate();
         }
 
         [RelayCommand]
-        private async Task<StationList> GetStationList()
+        private async Task<List<IStoppoint>> GetListAllStops()
         {
-            Uri uri = new($"https://api.rasp.yandex.net/v3.0/stations_list/?apikey={App.APIKey}&lang=ru_RU&format=json");
-            try
+            var allBusAndTramStops = new List<IStoppoint>();
+
+            var allTransport = await GortransPermAPI.GetRouteTypes(_httpClient);
+
+            if (allTransport is null) return default;
+
+            var allRouteIdInTramAndBus = allTransport
+                //.Where(typeTransport => typeTransport.RouteTypeId is (((int)RouteType.Bus) or (int)RouteType.Tram))
+                .SelectMany(transportType => transportType.Children
+                    .Select(transport => transport.RouteId))
+                .ToList();
+            
+            foreach (var routeId in allRouteIdInTramAndBus)
             {
-                HttpResponseMessage responseMessage = await _httpClient.GetAsync(uri);
-                if (responseMessage.IsSuccessStatusCode)
+                var routeInfo = await GortransPermAPI.GetFullRoute(routeId, _httpClient);
+
+                if (routeInfo is not null)
                 {
-                    var content = await responseMessage.Content.ReadAsStreamAsync();
+                    allBusAndTramStops.AddRange(routeInfo.FwdStoppoints
+                        .Where(stoppoint =>  !allBusAndTramStops
+                            .Select(sp => sp.StoppointId)
+                            .Contains(stoppoint.StoppointId)));
 
-                    StationList = await JsonSerializer.DeserializeAsync<StationList>(content);
-
-                    return StationList;
+                    allBusAndTramStops.AddRange(routeInfo.BkwdStoppoints
+                        .Where(stoppoint => !allBusAndTramStops
+                            .Select(sp => sp.StoppointId)
+                            .Contains(stoppoint.StoppointId)));
                 }
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-
-            return default;
-        }
-
-        [RelayCommand]
-        private async Task LoadFromFile()
-        {
-            string path = "C:\\Users\\Администратор\\Desktop\\StationList.json";
-
-            using var reader = File.OpenText(path);
-
-            var text = reader.ReadToEnd();
-
-            StationList = JsonSerializer.Deserialize<StationList>(text);
+            return allBusAndTramStops;
         }
     }
 }
