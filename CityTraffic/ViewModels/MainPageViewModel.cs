@@ -1,6 +1,4 @@
 ﻿using CityTraffic.DAL;
-using CityTraffic.Models;
-using CityTraffic.Models.Interfaces;
 using CityTraffic.Services;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
@@ -11,54 +9,29 @@ namespace CityTraffic.ViewModels
     public partial class MainPageViewModel : Base.ViewModel
     {
         private readonly CityTrafficDB _dB;
-        private readonly HttpClient _httpClient;
 
         public MainPageViewModel(CityTrafficDB dB)
         {
             _dB = dB;
-            _httpClient = new();
-
-            InitDb();
-        }
-
-        private void InitDb()
-        {
-            _dB?.Database.Migrate();
+            //_dB.Database.EnsureDeleted();
+            _dB.Database.Migrate();
+            //InitDb();
         }
 
         [RelayCommand]
-        private async Task<List<IStoppoint>> GetListAllStops()
+        private async Task InitDb()
         {
-            var allBusAndTramStops = new List<IStoppoint>();
-
-            var allTransport = await GortransPermAPI.GetRouteTypes(_httpClient);
-
-            if (allTransport is null) return default;
-
-            var allRouteIdInTramAndBus = allTransport
-                //.Where(typeTransport => typeTransport.RouteTypeId is (((int)RouteType.Bus) or (int)RouteType.Tram))
-                .SelectMany(transportType => transportType.Children
-                    .Select(transport => transport.RouteId))
-                .ToList();
-            
-            foreach (var routeId in allRouteIdInTramAndBus)
+            if (!_dB.TransportRoutes.Any())
             {
-                var routeInfo = await GortransPermAPI.GetFullRoute(routeId, _httpClient);
-
-                if (routeInfo is not null)
-                {
-                    allBusAndTramStops.AddRange(routeInfo.FwdStoppoints
-                        .Where(stoppoint =>  !allBusAndTramStops
-                            .Select(sp => sp.StoppointId)
-                            .Contains(stoppoint.StoppointId)));
-
-                    allBusAndTramStops.AddRange(routeInfo.BkwdStoppoints
-                        .Where(stoppoint => !allBusAndTramStops
-                            .Select(sp => sp.StoppointId)
-                            .Contains(stoppoint.StoppointId)));
-                }
+                _dB.TransportRoutes.AddRange(await GortransPermAPI.GetAllTransportRoutes());
+                _dB.SaveChanges();
             }
-            return allBusAndTramStops;
+
+            if (!_dB.Stoppoints.Any())
+            {
+                _dB.Stoppoints.AddRange(await GortransPermAPI.GetAllStoppoints(_dB.TransportRoutes.AsEnumerable()));
+                _dB.SaveChanges();
+            }
         }
     }
 }

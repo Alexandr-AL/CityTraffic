@@ -14,7 +14,7 @@
 
         <Button Text="Nearest stops"/>
 
-        <Button Command="{Binding GetListAllStopsCommand}"
+        <Button Command="{Binding InitDbCommand}"
                 Text="List"/>
 
     </VerticalStackLayout>

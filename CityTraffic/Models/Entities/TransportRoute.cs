@@ -1,15 +1,24 @@
 ﻿using CityTraffic.Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.Entities
 {
     public class TransportRoute : IEntity, ITransportRoute
     {
         public int Id { get; }
-        public string? RouteId { get; set; }
-        public string? RouteNumber { get; set; }
-        public string? Title { get; set; }
+
+        [JsonPropertyName("routeId")]
+        public string RouteId { get; set; }
+
+        [JsonPropertyName("routeNumber")]
+        public string RouteNumber { get; set; }
+
+        [JsonPropertyName("title")]
+        public string Title { get; set; }
+
+        [JsonPropertyName("routeTypeId")]
         public int RouteTypeId { get; set; }
-        public bool Favorites { get; set; }
+
+        public FavoritesTransportRoute FavoritesTransportRoute { get; set; }
     }
 }

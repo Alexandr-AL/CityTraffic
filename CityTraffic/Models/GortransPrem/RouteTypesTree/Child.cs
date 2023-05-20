@@ -1,18 +1,18 @@
-﻿using System.Text.Json.Serialization;
-using CityTraffic.Models.Interfaces;
+﻿using CityTraffic.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPrem.RouteTypesTree
 {
-    public class Child : ITransportRoute
+    public class Child : TransportRoute
     {
-        [JsonPropertyName("routeId")]
-        public string RouteId { get; set; }
+        //[JsonPropertyName("routeId")]
+        //public string RouteId { get; set; }
 
-        [JsonPropertyName("routeNumber")]
-        public string RouteNumber { get; set; }
+        //[JsonPropertyName("routeNumber")]
+        //public string RouteNumber { get; set; }
 
-        [JsonPropertyName("routeTypeId")]
-        public int RouteTypeId { get; set; }
+        //[JsonPropertyName("routeTypeId")]
+        //public int RouteTypeId { get; set; }
 
         [JsonPropertyName("icon")]
         public string Icon { get; set; }
@@ -20,8 +20,8 @@ namespace CityTraffic.Models.GortransPrem.RouteTypesTree
         [JsonPropertyName("isLazy")]
         public bool IsLazy { get; set; }
 
-        [JsonPropertyName("title")]
-        public string Title { get; set; }
+        //[JsonPropertyName("title")]
+        //public string Title { get; set; }
 
         [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }

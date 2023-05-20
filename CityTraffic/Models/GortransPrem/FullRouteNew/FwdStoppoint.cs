@@ -1,18 +1,18 @@
-﻿using System.Text.Json.Serialization;
-using CityTraffic.Models.Interfaces;
+﻿using CityTraffic.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPrem.FullRouteNew
 {
-    public class FwdStoppoint : IStoppoint
+    public class FwdStoppoint : Stoppoint
     {
-        [JsonPropertyName("stoppointId")]
-        public int StoppointId { get; set; }
+        //[JsonPropertyName("stoppointId")]
+        //public int StoppointId { get; set; }
 
-        [JsonPropertyName("stoppointName")]
-        public string StoppointName { get; set; }
+        //[JsonPropertyName("stoppointName")]
+        //public string StoppointName { get; set; }
 
-        [JsonPropertyName("note")]
-        public string Note { get; set; }
+        //[JsonPropertyName("note")]
+        //public string Note { get; set; }
 
         [JsonPropertyName("course")]
         public int Course { get; set; }
@@ -23,7 +23,7 @@ namespace CityTraffic.Models.GortransPrem.FullRouteNew
         [JsonPropertyName("labelYOffset")]
         public int LabelYOffset { get; set; }
 
-        [JsonPropertyName("location")]
-        public string Location { get; set; }
+        //[JsonPropertyName("location")]
+        //public string Location { get; set; }
     }
 }

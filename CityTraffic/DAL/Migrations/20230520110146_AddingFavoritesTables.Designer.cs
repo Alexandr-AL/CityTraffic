@@ -2,6 +2,7 @@
 using CityTraffic.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -9,9 +10,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CityTraffic.DAL.Migrations
 {
     [DbContext(typeof(CityTrafficDB))]
-    partial class CityTrafficDBModelSnapshot : ModelSnapshot
+    [Migration("20230520110146_AddingFavoritesTables")]
+    partial class AddingFavoritesTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.5");
@@ -32,7 +35,7 @@ namespace CityTraffic.DAL.Migrations
                     b.HasIndex("StoppointId")
                         .IsUnique();
 
-                    b.ToTable("FavoritesStoppoints", (string)null);
+                    b.ToTable("FavoritesStoppoints");
                 });
 
             modelBuilder.Entity("CityTraffic.Models.Entities.FavoritesTransportRoute", b =>
@@ -51,7 +54,7 @@ namespace CityTraffic.DAL.Migrations
                     b.HasIndex("TransportRouteId")
                         .IsUnique();
 
-                    b.ToTable("FavoritesTransportRoutes", (string)null);
+                    b.ToTable("FavoritesTransportRoutes");
                 });
 
             modelBuilder.Entity("CityTraffic.Models.Entities.Stoppoint", b =>
@@ -79,7 +82,7 @@ namespace CityTraffic.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stoppoints", (string)null);
+                    b.ToTable("Stoppoints");
                 });
 
             modelBuilder.Entity("CityTraffic.Models.Entities.TransportRoute", b =>
@@ -107,7 +110,7 @@ namespace CityTraffic.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransportRoutes", (string)null);
+                    b.ToTable("TransportRoutes");
                 });
 
             modelBuilder.Entity("CityTraffic.Models.Entities.FavoritesStoppoint", b =>

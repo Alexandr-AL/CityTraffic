@@ -1,4 +1,5 @@
 ﻿using CityTraffic.DAL;
+using CityTraffic.Services;
 using CityTraffic.ViewModels;
 using CityTraffic.Views;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ public static class MauiProgram
 
         string connectionString = $"Data Source = {GetDbPath()}CityTraffic.db";
 		builder.Services.AddSqlite<CityTrafficDB>(connectionString);
+
 		
 #if DEBUG
 		builder.Logging.AddDebug();
