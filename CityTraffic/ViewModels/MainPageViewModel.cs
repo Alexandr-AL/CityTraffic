@@ -1,7 +1,11 @@
 ﻿using CityTraffic.DAL;
 using CityTraffic.Services;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace CityTraffic.ViewModels
 {
@@ -13,25 +17,31 @@ namespace CityTraffic.ViewModels
         public MainPageViewModel(CityTrafficDB dB)
         {
             _dB = dB;
-            //_dB.Database.EnsureDeleted();
-            _dB.Database.Migrate();
-            //InitDb();
         }
 
         [RelayCommand]
-        private async Task InitDb()
+        private async void Initialize()
         {
-            if (!_dB.TransportRoutes.Any())
-            {
-                _dB.TransportRoutes.AddRange(await GortransPermAPI.GetAllTransportRoutes());
-                _dB.SaveChanges();
-            }
+            await _dB.InitDB();
+        }
 
-            if (!_dB.Stoppoints.Any())
-            {
-                _dB.Stoppoints.AddRange(await GortransPermAPI.GetAllStoppoints(_dB.TransportRoutes.AsEnumerable()));
-                _dB.SaveChanges();
-            }
+        [RelayCommand]
+        private async void Update()
+        {
+            var result = await _dB.UpdateDB();
+
+            await Shell.Current.DisplayAlert($"Updated {result.Item1} entites in {result.Item2} sec.", 
+                                             $"Count Transport routes {_dB.TransportRoutes.Count()}\n" +
+                                             $"Count Stationpoints {_dB.Stoppoints.Count()}", "OK");
+        }
+
+        [RelayCommand]
+        private async void ClearTables()
+        {
+            _dB.TransportRoutes.ExecuteDelete();
+            _dB.Stoppoints.ExecuteDelete();
+
+            await Shell.Current.DisplayAlert("Tables cleared", "", "OK");
         }
     }
 }

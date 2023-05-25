@@ -21,5 +21,19 @@ namespace CityTraffic.Models.Entities
 
         public FavoritesStoppoint FavoritesStoppoint { get; set; }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj is not Stoppoint other) return false;
+
+            return StoppointId == other.StoppointId &&
+                   StoppointName == other.StoppointName &&
+                   Location == other.Location &&
+                   Note == other.Note;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

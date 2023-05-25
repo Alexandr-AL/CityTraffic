@@ -1,9 +1,11 @@
-﻿namespace CityTraffic;
+﻿using CityTraffic.DAL;
+
+namespace CityTraffic;
 
 public partial class AppShell : Shell
 {
-	public AppShell()
+    public AppShell()
 	{
 		InitializeComponent();
-	}
+    }
 }

@@ -1,11 +1,16 @@
 ﻿using CityTraffic.Models.Entities;
+using CityTraffic.Models.Interfaces;
+using CityTraffic.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
+using System.Linq;
 
 namespace CityTraffic.DAL
 {
     public class CityTrafficDB : DbContext
     {
         public CityTrafficDB(DbContextOptions<CityTrafficDB> options) : base(options) { }
+
 
         public DbSet<TransportRoute> TransportRoutes {get;set;}
         public DbSet<Stoppoint> Stoppoints { get;set;}
@@ -125,6 +130,81 @@ namespace CityTraffic.DAL
                         .HasColumnType("INTEGER")
                         .IsRequired(true);
                 });
+        }
+
+        public async Task InitDB()
+        {
+            await Database.MigrateAsync();
+
+            if (!TransportRoutes.Any())
+                await TransportRoutes.AddRangeAsync(await GortransPermAPI.GetAllTransportRoutes());
+
+            if (!Stoppoints.Any() && TransportRoutes.Any())
+                await Stoppoints.AddRangeAsync(await GortransPermAPI.GetAllStoppoints(TransportRoutes.AsEnumerable()));
+
+            await SaveChangesAsync();
+        }
+
+        public async Task<(int, double)> UpdateDB()
+        {
+            var timer = new Stopwatch();
+            timer.Start();
+
+            /*Update TransportRoutes*/
+            var transportRoutesNew = await GortransPermAPI.GetAllTransportRoutes();
+
+            List<string> routesId = new(TransportRoutes.Select(tr => tr.RouteId).ToList());
+
+            foreach (var newItem in transportRoutesNew)
+            {
+                if (routesId.Contains(newItem.RouteId))
+                {
+                    routesId.Remove(newItem.RouteId);
+
+                    var transportRoute = TransportRoutes.Single(tr => tr.RouteId == newItem.RouteId);
+
+                    if (newItem.Equals(transportRoute)) continue;
+
+                    transportRoute.RouteNumber = newItem.RouteNumber;
+                    transportRoute.Title = newItem.Title;
+                    transportRoute.RouteTypeId = newItem.RouteTypeId;
+                }
+                else TransportRoutes.Add(newItem);
+            }
+
+            foreach (var itemToRemove in routesId)
+                TransportRoutes.Remove(TransportRoutes.Include(tr => tr.FavoritesTransportRoute).Single(e => e.RouteId == itemToRemove));
+            
+            /*Update Stoppoints*/
+            var stoppointsNew = new List<Stoppoint>();
+            if (transportRoutesNew.Any())
+                stoppointsNew = await GortransPermAPI.GetAllStoppoints(transportRoutesNew);
+
+            List<int> stoppointId = new(Stoppoints.Select(sp => sp.StoppointId).ToList());
+
+            foreach (var newItem in stoppointsNew)
+            {
+                if (stoppointId.Contains(newItem.StoppointId))
+                {
+                    stoppointId.Remove(newItem.StoppointId);
+
+                    var stoppoint = Stoppoints.Single(sp => sp.StoppointId == newItem.StoppointId);
+
+                    if (newItem.Equals(stoppoint)) continue;
+
+                    stoppoint.StoppointName = newItem.StoppointName;
+                    stoppoint.Location = newItem.Location;
+                    stoppoint.Note = newItem.Note;
+                }
+                else Stoppoints.Add(newItem);
+            }
+
+            foreach (var itemToRemove in stoppointId)
+                Stoppoints.Remove(Stoppoints.Include(sp => sp.FavoritesStoppoint).Single(e => e.StoppointId == itemToRemove));
+
+            timer.Stop();
+
+            return (await SaveChangesAsync(), timer.Elapsed.TotalSeconds);
         }
     }
 }

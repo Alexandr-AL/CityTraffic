@@ -6,8 +6,20 @@
        xmlns:views="clr-namespace:CityTraffic.Views"
        Shell.FlyoutBehavior="Disabled">
 
-    <ShellContent Title="Home"
-                  ContentTemplate="{DataTemplate views:MainPage}"
-                  Route="MainPage"/>
+    <TabBar>
+        <ShellContent Title="Home"
+                      ContentTemplate="{DataTemplate views:MainPage}"/>
+
+        <Tab Title="Lists">
+            <ShellContent Title="Stoppoints List"
+                          ContentTemplate="{DataTemplate views:StoppointListPage}"/>
+
+            <ShellContent Title="Transport Routes List"
+                          ContentTemplate="{DataTemplate views:TransportRoutesPage}"/>
+        </Tab>
+
+        <ShellContent Title="Favorites"
+                      ContentTemplate="{DataTemplate views:FavoritesPage}"/>
+    </TabBar>
 
 </Shell>

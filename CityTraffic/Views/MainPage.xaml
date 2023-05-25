@@ -2,6 +2,7 @@
 <ContentPage x:Class="CityTraffic.Views.MainPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:view="clr-namespace:CityTraffic.Views"
              xmlns:vm="clr-namespace:CityTraffic.ViewModels"
              Title="City Traffic"
              x:DataType="vm:MainPageViewModel">
@@ -9,13 +10,15 @@
     <VerticalStackLayout HorizontalOptions="Center"
                          VerticalOptions="Start">
 
-        <Button Margin="0,20,0,0"
-                Text="Favorites"/>
+        <Button Command="{Binding InitializeCommand}"
+                Text="Init DB"/>
 
-        <Button Text="Nearest stops"/>
+        <Button Command="{Binding UpdateCommand}"
+                Text="Update DB"/>
 
-        <Button Command="{Binding InitDbCommand}"
-                Text="List"/>
+        <Button Command="{Binding ClearTablesCommand}"
+                Text="Clear tables"/>
 
     </VerticalStackLayout>
+
 </ContentPage>

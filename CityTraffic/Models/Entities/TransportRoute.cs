@@ -20,5 +20,20 @@ namespace CityTraffic.Models.Entities
         public int RouteTypeId { get; set; }
 
         public FavoritesTransportRoute FavoritesTransportRoute { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || obj is not TransportRoute other) return false;
+
+            return RouteId == other.RouteId
+                && RouteNumber == other.RouteNumber
+                && Title == other.Title
+                && RouteTypeId == other.RouteTypeId;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }
