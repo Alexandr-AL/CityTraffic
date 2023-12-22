@@ -11,11 +11,11 @@
                       ContentTemplate="{DataTemplate views:MainPage}"/>
 
         <Tab Title="Lists">
-            <ShellContent Title="Stoppoints List"
-                          ContentTemplate="{DataTemplate views:StoppointListPage}"/>
-
             <ShellContent Title="Transport Routes List"
                           ContentTemplate="{DataTemplate views:TransportRoutesPage}"/>
+
+            <ShellContent Title="Stoppoints List"
+                          ContentTemplate="{DataTemplate views:StoppointListPage}"/>
         </Tab>
 
         <ShellContent Title="Favorites"

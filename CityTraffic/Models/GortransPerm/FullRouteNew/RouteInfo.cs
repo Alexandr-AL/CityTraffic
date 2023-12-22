@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CityTraffic.Models.GortransPrem.FullRouteNew
+namespace CityTraffic.Models.GortransPerm.FullRouteNew
 {
     public class RouteInfo
     {

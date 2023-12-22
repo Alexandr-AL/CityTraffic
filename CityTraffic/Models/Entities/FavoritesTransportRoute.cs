@@ -1,4 +1,6 @@
-﻿namespace CityTraffic.Models.Entities
+﻿using CityTraffic.Models.Entities.Interfaces;
+
+namespace CityTraffic.Models.Entities
 {
     public class FavoritesTransportRoute : IEntity
     {

@@ -1,4 +1,4 @@
-﻿namespace CityTraffic.Models.Interfaces
+﻿namespace CityTraffic.Models.Base.Interfaces
 {
     public interface IStoppoint
     {

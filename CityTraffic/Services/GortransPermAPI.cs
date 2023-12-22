@@ -1,6 +1,7 @@
-﻿using CityTraffic.Models.Entities;
-using CityTraffic.Models.GortransPrem.FullRouteNew;
-using CityTraffic.Models.GortransPrem.RouteTypesTree;
+﻿using CityTraffic.Models.Base;
+using CityTraffic.Models.Entities;
+using CityTraffic.Models.GortransPerm.FullRouteNew;
+using CityTraffic.Models.GortransPerm.RouteTypesTree;
 using System.Text.Json;
 
 namespace CityTraffic.Services
@@ -92,13 +93,13 @@ namespace CityTraffic.Services
         /// </summary>
         /// <param name="transport">Список всех маршрутов</param>
         /// <returns></returns>
-        public static async Task<List<Stoppoint>> GetAllStoppoints(IEnumerable<TransportRoute> transport)
+        public static async Task<List<BaseStoppoint>> GetAllStoppoints(IEnumerable<BaseTransportRoute> transport)
         {
             if (transport is null) return default;
 
             List<string> allRouteIdInTransport = transport.Select(t => t.RouteId).ToList();
 
-            List<Stoppoint> allStoppoints = new();
+            List<BaseStoppoint> allStoppoints = new();
 
             foreach (var routeId in allRouteIdInTransport)
             {

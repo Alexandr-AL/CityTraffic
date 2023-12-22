@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CityTraffic.Models.GortransPrem.RouteTypesTree
+namespace CityTraffic.Models.GortransPerm.RouteTypesTree
 {
     public class TransportType
     {

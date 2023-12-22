@@ -1,10 +1,10 @@
-﻿namespace CityTraffic.Models.GortransPrem
+﻿namespace CityTraffic.Models.GortransPerm
 {
     public enum RouteType
     {
         Bus = 0,
         Tram = 2,
-        SuttleTaxi = 3,
+        ShuttleTaxi = 3,
         TourBus = 6,
         TourRoutes = 8
     }

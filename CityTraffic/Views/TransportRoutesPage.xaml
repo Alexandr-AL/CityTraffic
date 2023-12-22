@@ -13,14 +13,30 @@
 
             <DataTemplate x:DataType="model:TransportRoute">
 
-                <Frame Margin="5,1">
+                <SwipeView>
+                    <SwipeView.LeftItems>
+                        <SwipeItem Command="{Binding Path=AddToFavoritesCommand, Source={RelativeSource AncestorType={x:Type vm:TransportRoutesViewModel}}}"
+                                   CommandParameter="{Binding .}"
+                                   Text="Favorite"/>
+                    </SwipeView.LeftItems>
 
-                    <HorizontalStackLayout>
+                    <Frame Margin="5,1">
 
-                        <Label Text="{Binding Title}"/>
+                        <FlyoutBase.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Clicked="MenuFlyoutItem_Clicked"
+                                                CommandParameter="{Binding .}"
+                                                Text="Add To Favorites"/>
+                            </MenuFlyout>
+                        </FlyoutBase.ContextFlyout>
 
-                    </HorizontalStackLayout>
-                </Frame>
+                        <HorizontalStackLayout>
+
+                            <Label Text="{Binding Title}"/>
+
+                        </HorizontalStackLayout>
+                    </Frame>
+                </SwipeView>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

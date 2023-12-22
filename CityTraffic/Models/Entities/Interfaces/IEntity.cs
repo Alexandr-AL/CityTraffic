@@ -1,4 +1,4 @@
-﻿namespace CityTraffic.Models.Entities
+﻿namespace CityTraffic.Models.Entities.Interfaces
 {
     public interface IEntity
     {

@@ -1,11 +1,9 @@
 ﻿using CityTraffic.DAL;
-using CityTraffic.Services;
-using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core;
+using CityTraffic.Models.Entities;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace CityTraffic.ViewModels
 {
@@ -17,31 +15,32 @@ namespace CityTraffic.ViewModels
         public MainPageViewModel(CityTrafficDB dB)
         {
             _dB = dB;
+            _dB.InitDB();
+            
+            FavoritesTR = new(_dB.FavoritesTransportRoutes);
+            FavoritesSp = new(_dB.FavoritesStoppoints);
         }
 
-        [RelayCommand]
-        private async void Initialize()
-        {
-            await _dB.InitDB();
-        }
+        [ObservableProperty]
+        private ObservableCollection<FavoritesTransportRoute> _favoritesTR;
+
+        [ObservableProperty]
+        private ObservableCollection<FavoritesStoppoint> _favoritesSp;
 
         [RelayCommand]
         private async void Update()
         {
             var result = await _dB.UpdateDB();
 
-            await Shell.Current.DisplayAlert($"Updated {result.Item1} entites in {result.Item2} sec.", 
+            await Shell.Current.DisplayAlert($"Updated {result.Item1} entities in {result.Item2} sec.", 
                                              $"Count Transport routes {_dB.TransportRoutes.Count()}\n" +
-                                             $"Count Stationpoints {_dB.Stoppoints.Count()}", "OK");
+                                             $"Count Stoppoints {_dB.Stoppoints.Count()}", "OK");
         }
 
-        [RelayCommand]
-        private async void ClearTables()
+        private void DeleteFavoritesTR(FavoritesTransportRoute favoritesTransportRoute)
         {
-            _dB.TransportRoutes.ExecuteDelete();
-            _dB.Stoppoints.ExecuteDelete();
-
-            await Shell.Current.DisplayAlert("Tables cleared", "", "OK");
+            _dB.FavoritesTransportRoutes.Remove(favoritesTransportRoute);
+            _dB.SaveChanges();
         }
     }
 }

@@ -10,4 +10,9 @@ public partial class MainPage : ContentPage
 		InitializeComponent();
 		BindingContext = mainPageVM;
 	}
+
+    private void MenuFlyoutItem_Clicked(object sender, EventArgs e)
+    {
+
+    }
 }

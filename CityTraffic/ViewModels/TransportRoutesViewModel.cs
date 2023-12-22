@@ -1,6 +1,8 @@
 ﻿using CityTraffic.DAL;
 using CityTraffic.Models.Entities;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
 
 namespace CityTraffic.ViewModels
@@ -17,5 +19,18 @@ namespace CityTraffic.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<TransportRoute> _transportRoutes;
+                
+        [RelayCommand]
+        private void AddToFavorites(TransportRoute transportRoute)
+        {
+            var tr = _dB.TransportRoutes.Include(tr=> tr.FavoritesTransportRoute).SingleOrDefault(e => e.Id == transportRoute.Id);
+
+            tr.FavoritesTransportRoute = new()
+            {
+                TransportRouteId = tr.Id,
+                TransportRoute = tr
+            };
+            _dB.SaveChanges();
+        }
     }
 }

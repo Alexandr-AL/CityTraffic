@@ -1,16 +1,13 @@
 ﻿using CityTraffic.Models.Entities;
-using CityTraffic.Models.Interfaces;
 using CityTraffic.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
-using System.Linq;
 
 namespace CityTraffic.DAL
 {
     public class CityTrafficDB : DbContext
     {
         public CityTrafficDB(DbContextOptions<CityTrafficDB> options) : base(options) { }
-
 
         public DbSet<TransportRoute> TransportRoutes {get;set;}
         public DbSet<Stoppoint> Stoppoints { get;set;}
@@ -132,17 +129,43 @@ namespace CityTraffic.DAL
                 });
         }
 
-        public async Task InitDB()
+        public async void InitDB()
         {
             await Database.MigrateAsync();
 
             if (!TransportRoutes.Any())
-                await TransportRoutes.AddRangeAsync(await GortransPermAPI.GetAllTransportRoutes());
+            {
+                var allTransportRoutes = await GortransPermAPI.GetAllTransportRoutes();
+                foreach (var item in allTransportRoutes)
+                {
+                    await TransportRoutes.AddAsync(new TransportRoute
+                    {
+                        RouteId = item.RouteId,
+                        RouteNumber = item.RouteNumber,
+                        Title = item.Title,
+                        RouteTypeId = item.RouteTypeId
+                    });
+                }
+            }
 
             if (!Stoppoints.Any() && TransportRoutes.Any())
-                await Stoppoints.AddRangeAsync(await GortransPermAPI.GetAllStoppoints(TransportRoutes.AsEnumerable()));
+            {
+                var allStoppoints = await GortransPermAPI.GetAllStoppoints(TransportRoutes.AsEnumerable());
+                foreach (var item in allStoppoints)
+                {
+                    await Stoppoints.AddAsync(new Stoppoint
+                    {
+                        StoppointId = item.StoppointId,
+                        StoppointName = item.StoppointName,
+                        Location = item.Location,
+                        Note = item.Note
+                    });
+                }
+            }
 
             await SaveChangesAsync();
+
+            Debug.WriteLine("--------------------\nInit DB is done\n--------------------");
         }
 
         public async Task<(int, double)> UpdateDB()
@@ -169,16 +192,20 @@ namespace CityTraffic.DAL
                     transportRoute.Title = newItem.Title;
                     transportRoute.RouteTypeId = newItem.RouteTypeId;
                 }
-                else TransportRoutes.Add(newItem);
+                else TransportRoutes.Add(new TransportRoute
+                {
+                    RouteId = newItem.RouteId,
+                    RouteNumber = newItem.RouteNumber,
+                    Title = newItem.Title,
+                    RouteTypeId = newItem.RouteTypeId
+                });
             }
 
             foreach (var itemToRemove in routesId)
                 TransportRoutes.Remove(TransportRoutes.Include(tr => tr.FavoritesTransportRoute).Single(e => e.RouteId == itemToRemove));
             
             /*Update Stoppoints*/
-            var stoppointsNew = new List<Stoppoint>();
-            if (transportRoutesNew.Any())
-                stoppointsNew = await GortransPermAPI.GetAllStoppoints(transportRoutesNew);
+            var stoppointsNew = await GortransPermAPI.GetAllStoppoints(transportRoutesNew);
 
             List<int> stoppointId = new(Stoppoints.Select(sp => sp.StoppointId).ToList());
 
@@ -196,13 +223,21 @@ namespace CityTraffic.DAL
                     stoppoint.Location = newItem.Location;
                     stoppoint.Note = newItem.Note;
                 }
-                else Stoppoints.Add(newItem);
+                else Stoppoints.Add(new Stoppoint
+                {
+                    StoppointId = newItem.StoppointId,
+                    StoppointName = newItem.StoppointName,
+                    Location = newItem.Location,
+                    Note = newItem.Note
+                });
             }
 
             foreach (var itemToRemove in stoppointId)
                 Stoppoints.Remove(Stoppoints.Include(sp => sp.FavoritesStoppoint).Single(e => e.StoppointId == itemToRemove));
 
             timer.Stop();
+
+            Debug.WriteLine($"--------------------\nUpdate DB completed in {timer.Elapsed.TotalSeconds} sec\n--------------------");
 
             return (await SaveChangesAsync(), timer.Elapsed.TotalSeconds);
         }

@@ -29,6 +29,8 @@ namespace CityTraffic.Services
             {
                 Debug.WriteLine(ex);
             }
+            finally { httpClient.Dispose(); }
+
             return default;
         }
     }

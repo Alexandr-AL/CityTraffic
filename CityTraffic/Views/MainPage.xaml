@@ -2,23 +2,70 @@
 <ContentPage x:Class="CityTraffic.Views.MainPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:CityTraffic.Models.Entities"
              xmlns:view="clr-namespace:CityTraffic.Views"
              xmlns:vm="clr-namespace:CityTraffic.ViewModels"
              Title="City Traffic"
              x:DataType="vm:MainPageViewModel">
 
-    <VerticalStackLayout HorizontalOptions="Center"
-                         VerticalOptions="Start">
+    <Shell.TitleView>
+        <HorizontalStackLayout>
 
-        <Button Command="{Binding InitializeCommand}"
-                Text="Init DB"/>
+            <Button Command="{Binding UpdateCommand}"
+                    Text="Update DB"/>
 
-        <Button Command="{Binding UpdateCommand}"
-                Text="Update DB"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
 
-        <Button Command="{Binding ClearTablesCommand}"
-                Text="Clear tables"/>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-    </VerticalStackLayout>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <CollectionView Grid.Row="0"
+                        Grid.Column="0"
+                        ItemsSource="{Binding FavoritesTR}">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="model:FavoritesTransportRoute">
+
+                    <Frame>
+                        <FlyoutBase.ContextFlyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Clicked="MenuFlyoutItem_Clicked"
+                                                CommandParameter="{Binding .}"
+                                                Text="Del"/>
+                            </MenuFlyout>
+                        </FlyoutBase.ContextFlyout>
+                        <Label Text="{Binding TransportRoute.Title}"/>
+                    </Frame>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <CollectionView Grid.Row="0"
+                        Grid.Column="1"
+                        ItemsSource="{Binding FavoritesSp}">
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="model:FavoritesStoppoint">
+
+                    <Frame>
+                        <Label Text="{Binding Stoppoint.StoppointName}"/>
+                    </Frame>
+
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
 
 </ContentPage>
