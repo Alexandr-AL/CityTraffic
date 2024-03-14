@@ -8,15 +8,6 @@
              Title="City Traffic"
              x:DataType="vm:MainPageViewModel">
 
-    <Shell.TitleView>
-        <HorizontalStackLayout>
-
-            <Button Command="{Binding UpdateCommand}"
-                    Text="Update DB"/>
-
-        </HorizontalStackLayout>
-    </Shell.TitleView>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -27,9 +18,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <CollectionView Grid.Row="0"
+        <!--<CollectionView Grid.Row="0"
                         Grid.Column="0"
-                        ItemsSource="{Binding FavoritesTR}">
+                        ItemsSource="{Binding }">
 
             <CollectionView.ItemTemplate>
 
@@ -48,9 +39,9 @@
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-        </CollectionView>
+        </CollectionView>-->
 
-        <CollectionView Grid.Row="0"
+        <!--<CollectionView Grid.Row="0"
                         Grid.Column="1"
                         ItemsSource="{Binding FavoritesSp}">
 
@@ -64,7 +55,7 @@
 
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-        </CollectionView>
+        </CollectionView>-->
 
     </Grid>
 

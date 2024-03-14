@@ -9,127 +9,37 @@ namespace CityTraffic.DAL
     {
         public CityTrafficDB(DbContextOptions<CityTrafficDB> options) : base(options) { }
 
-        public DbSet<TransportRoute> TransportRoutes {get;set;}
-        public DbSet<Stoppoint> Stoppoints { get;set;}
-        public DbSet<FavoritesTransportRoute> FavoritesTransportRoutes { get;set;}
-        public DbSet<FavoritesStoppoint> FavoritesStoppoints { get;set;}
+        public DbSet<EntityTransportRoute> TransportRoutes {get;set;}
+        public DbSet<EntityStoppoint> Stoppoints { get;set;}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TransportRoute>(
-                transportRoute => 
-                {
-                    transportRoute.HasKey(p => p.Id);
+            modelBuilder.Entity<EntityTransportRoute>(entityTR =>
+            {
+                entityTR.HasKey(x => x.RouteId);
 
-                    transportRoute.Property(p => p.Id)
-                        .HasColumnName("id")
-                        .HasColumnType("INTEGER")
-                        .ValueGeneratedOnAdd()
-                        .IsRequired(true);
+                entityTR.Property(x => x.RouteId).HasColumnName("route_id").IsRequired();
+                entityTR.Property(x => x.RouteNumber).HasColumnName("route_number");
+                entityTR.Property(x => x.RouteTypeId).HasColumnName("route_type_id");
+                entityTR.Property(x => x.Title).HasColumnName("title");
+                entityTR.Property(x => x.FavoriteTransportRoute).HasColumnName("favorite_transport_route");
+            });
 
-                    transportRoute.Property(p => p.RouteId)
-                        .HasColumnName("route_id")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
+            modelBuilder.Entity<EntityStoppoint>(entitySt =>
+            {
+                entitySt.HasKey(x => x.StoppointId);
 
-                    transportRoute.Property(p => p.RouteNumber)
-                        .HasColumnName("route_number")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
+                entitySt.Property(x => x.StoppointId).HasColumnName("stoppoint_id").IsRequired();
+                entitySt.Property(x => x.StoppointName).HasColumnName("stoppoint_name");
+                entitySt.Property(x => x.Location).HasColumnName("location");
+                entitySt.Property(x => x.Note).HasColumnName("note");
+                entitySt.Property(x => x.FavoriteStoppoint).HasColumnName("favorite_stoppoint");
+            });
 
-                    transportRoute.Property(p => p.Title)
-                        .HasColumnName("title")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
-
-                    transportRoute.Property(p => p.RouteTypeId)
-                        .HasColumnName("route_type_id")
-                        .HasColumnType("INTEGER")
-                        .IsRequired(true);
-
-                    transportRoute
-                        .HasOne(e => e.FavoritesTransportRoute)
-                        .WithOne(e => e.TransportRoute)
-                        .HasForeignKey<FavoritesTransportRoute>(e => e.TransportRouteId)
-                        .IsRequired(true);
-                });
-
-            modelBuilder.Entity<FavoritesTransportRoute>(
-                favoriteTransportRoute =>
-                {
-                    favoriteTransportRoute.HasKey(p => p.Id);
-
-                    favoriteTransportRoute.Property(p => p.Id)
-                        .HasColumnName("id")
-                        .HasColumnType("INTEGER")
-                        .ValueGeneratedOnAdd()
-                        .IsRequired(true);
-
-                    favoriteTransportRoute.Property(p => p.TransportRouteId)
-                        .HasColumnName("transport_route_id")
-                        .HasColumnType("INTEGER")
-                        .IsRequired(true);
-                        
-                });
-
-            modelBuilder.Entity<Stoppoint>(
-                stoppoint =>
-                {
-                    stoppoint.HasKey(p => p.Id);
-
-                    stoppoint.Property(p => p.Id)
-                        .HasColumnName("id")
-                        .HasColumnType("INTEGER")
-                        .ValueGeneratedOnAdd()
-                        .IsRequired(true);
-
-                    stoppoint.Property(p => p.StoppointId)
-                        .HasColumnName("stoppoint_id")
-                        .HasColumnType("INTEGER")
-                        .IsRequired(true);
-
-                    stoppoint.Property(p => p.StoppointName)
-                        .HasColumnName("stoppoint_name")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
-
-                    stoppoint.Property(p => p.Location)
-                        .HasColumnName("location")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
-
-
-                    stoppoint.Property(p => p.Note)
-                        .HasColumnName("note")
-                        .HasColumnType("TEXT")
-                        .IsRequired(false);
-
-                    stoppoint
-                        .HasOne(e => e.FavoritesStoppoint)
-                        .WithOne(e => e.Stoppoint)
-                        .HasForeignKey<FavoritesStoppoint>(e => e.StoppointId)
-                        .IsRequired(true);
-                });
-
-            modelBuilder.Entity<FavoritesStoppoint>(
-                favoriteStoppoints =>
-                {
-                    favoriteStoppoints.HasKey(p => p.Id);
-
-                    favoriteStoppoints.Property(p => p.Id)
-                        .HasColumnName("id")
-                        .HasColumnType("INTEGER")
-                        .ValueGeneratedOnAdd()
-                        .IsRequired(true);
-
-                    favoriteStoppoints.Property(p => p.StoppointId)
-                        .HasColumnName("stoppoint_id")
-                        .HasColumnType("INTEGER")
-                        .IsRequired(true);
-                });
+            base.OnModelCreating(modelBuilder);
         }
 
-        public async void InitDB()
+        public async Task<int> InitDB()
         {
             await Database.MigrateAsync();
 
@@ -138,34 +48,36 @@ namespace CityTraffic.DAL
                 var allTransportRoutes = await GortransPermAPI.GetAllTransportRoutes();
                 foreach (var item in allTransportRoutes)
                 {
-                    await TransportRoutes.AddAsync(new TransportRoute
+                    TransportRoutes.Add(new EntityTransportRoute
                     {
                         RouteId = item.RouteId,
                         RouteNumber = item.RouteNumber,
                         Title = item.Title,
-                        RouteTypeId = item.RouteTypeId
+                        RouteTypeId = item.RouteTypeId,
+                        FavoriteTransportRoute = false
                     });
                 }
-            }
 
-            if (!Stoppoints.Any() && TransportRoutes.Any())
-            {
-                var allStoppoints = await GortransPermAPI.GetAllStoppoints(TransportRoutes.AsEnumerable());
-                foreach (var item in allStoppoints)
+                if (!Stoppoints.Any())
                 {
-                    await Stoppoints.AddAsync(new Stoppoint
+                    var allStoppoints = await GortransPermAPI.GetAllStoppoints(allTransportRoutes);
+                    foreach (var item in allStoppoints)
                     {
-                        StoppointId = item.StoppointId,
-                        StoppointName = item.StoppointName,
-                        Location = item.Location,
-                        Note = item.Note
-                    });
+                        Stoppoints.Add(new EntityStoppoint
+                        {
+                            StoppointId = item.StoppointId,
+                            StoppointName = item.StoppointName,
+                            Location = item.Location,
+                            Note = item.Note,
+                            FavoriteStoppoint = false
+                        });
+                    }
                 }
             }
-
-            await SaveChangesAsync();
 
             Debug.WriteLine("--------------------\nInit DB is done\n--------------------");
+
+            return await SaveChangesAsync();
         }
 
         public async Task<(int, double)> UpdateDB()
@@ -192,7 +104,7 @@ namespace CityTraffic.DAL
                     transportRoute.Title = newItem.Title;
                     transportRoute.RouteTypeId = newItem.RouteTypeId;
                 }
-                else TransportRoutes.Add(new TransportRoute
+                else TransportRoutes.Add(new EntityTransportRoute
                 {
                     RouteId = newItem.RouteId,
                     RouteNumber = newItem.RouteNumber,
@@ -201,19 +113,20 @@ namespace CityTraffic.DAL
                 });
             }
 
-            foreach (var itemToRemove in routesId)
-                TransportRoutes.Remove(TransportRoutes.Include(tr => tr.FavoritesTransportRoute).Single(e => e.RouteId == itemToRemove));
+            if (routesId.Count > 0)
+                foreach (var routeId in routesId)
+                    TransportRoutes.Remove(TransportRoutes.Single(tr => tr.RouteId == routeId));
             
             /*Update Stoppoints*/
             var stoppointsNew = await GortransPermAPI.GetAllStoppoints(transportRoutesNew);
 
-            List<int> stoppointId = new(Stoppoints.Select(sp => sp.StoppointId).ToList());
+            List<int> stoppointsId = new(Stoppoints.Select(sp => sp.StoppointId).ToList());
 
             foreach (var newItem in stoppointsNew)
             {
-                if (stoppointId.Contains(newItem.StoppointId))
+                if (stoppointsId.Contains(newItem.StoppointId))
                 {
-                    stoppointId.Remove(newItem.StoppointId);
+                    stoppointsId.Remove(newItem.StoppointId);
 
                     var stoppoint = Stoppoints.Single(sp => sp.StoppointId == newItem.StoppointId);
 
@@ -223,7 +136,7 @@ namespace CityTraffic.DAL
                     stoppoint.Location = newItem.Location;
                     stoppoint.Note = newItem.Note;
                 }
-                else Stoppoints.Add(new Stoppoint
+                else Stoppoints.Add(new EntityStoppoint
                 {
                     StoppointId = newItem.StoppointId,
                     StoppointName = newItem.StoppointName,
@@ -232,8 +145,9 @@ namespace CityTraffic.DAL
                 });
             }
 
-            foreach (var itemToRemove in stoppointId)
-                Stoppoints.Remove(Stoppoints.Include(sp => sp.FavoritesStoppoint).Single(e => e.StoppointId == itemToRemove));
+            if (stoppointsId.Count > 0)
+                foreach (var stoppointId in stoppointsId)
+                    Stoppoints.Remove(Stoppoints.Single(sp => sp.StoppointId == stoppointId));
 
             timer.Stop();
 

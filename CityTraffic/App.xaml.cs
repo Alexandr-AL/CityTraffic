@@ -6,7 +6,8 @@ public partial class App : Application
 	{
 		InitializeComponent();
 
-		MainPage = new AppShell();
+		//MainPage = new AppShell();
+		MainPage = IPlatformApplication.Current.Services.GetService<AppShell>();
     }
 
     protected override Window CreateWindow(IActivationState activationState)

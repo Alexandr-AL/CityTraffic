@@ -1,11 +1,12 @@
-﻿using CityTraffic.DAL;
+﻿using CityTraffic.ViewModels;
 
 namespace CityTraffic;
 
 public partial class AppShell : Shell
 {
-    public AppShell()
+    public AppShell(AppShellViewModel appShellVM)
 	{
 		InitializeComponent();
+        BindingContext = appShellVM;
     }
 }

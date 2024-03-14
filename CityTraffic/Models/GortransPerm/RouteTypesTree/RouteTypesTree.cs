@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using CityTraffic.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPerm.RouteTypesTree
 {
-    public class TransportType
+    public class RouteTypesTree
     {
         [JsonPropertyName("children")]
         public List<Child> Children { get; set; }

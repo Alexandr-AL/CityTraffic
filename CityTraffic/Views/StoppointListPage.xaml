@@ -11,19 +11,27 @@
 
         <CollectionView.ItemTemplate>
 
-            <DataTemplate x:DataType="model:Stoppoint">
+            <DataTemplate x:DataType="model:EntityStoppoint">
 
                 <Frame Margin="5,1">
 
-                    <HorizontalStackLayout>
+                    <Grid>
+                        <HorizontalStackLayout HorizontalOptions="Start"
+                                               VerticalOptions="Center">
 
-                        <Label FontAttributes="Bold"
-                               Text="{Binding StoppointName}"/>
+                            <Label FontAttributes="Bold"
+                                   Text="{Binding StoppointName}"/>
 
-                        <Label Margin="5,0,0,0"
-                               Text="{Binding Note}"/>
+                            <Label Margin="5,0,0,0"
+                                   Text="{Binding Note}"/>
 
-                    </HorizontalStackLayout>
+                        </HorizontalStackLayout>
+
+                        <Switch HorizontalOptions="End"
+                                VerticalOptions="Center"
+                                IsToggled="{Binding FavoriteStoppoint}"/>
+
+                    </Grid>
                 </Frame>
             </DataTemplate>
         </CollectionView.ItemTemplate>

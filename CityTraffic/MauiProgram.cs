@@ -22,6 +22,7 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
 
+		builder.Services.AddSingleton<AppShell, AppShellViewModel>();
 		builder.Services.AddSingleton<MainPage, MainPageViewModel>();
 		builder.Services.AddSingleton<StoppointListPage, StoppointListViewModel>();
         builder.Services.AddSingleton<TransportRoutesPage, TransportRoutesViewModel>();

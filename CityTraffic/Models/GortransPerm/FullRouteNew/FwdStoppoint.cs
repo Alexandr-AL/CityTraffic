@@ -1,21 +1,17 @@
-﻿using CityTraffic.Models.Base;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPerm.FullRouteNew
 {
-    public class FwdStoppoint : BaseStoppoint
+    public class FwdStoppoint : Base.Stoppoint
     {
         [JsonPropertyName("stoppointId")]
-        public override int StoppointId { get => base.StoppointId; set => base.StoppointId = value; }
+        public override int StoppointId { get; set; }
 
         [JsonPropertyName("stoppointName")]
-        public override string StoppointName { get => base.StoppointName; set => base.StoppointName = value; }
-
-        [JsonPropertyName("location")]
-        public override string Location { get => base.Location; set => base.Location = value; }
+        public override string StoppointName { get; set; }
 
         [JsonPropertyName("note")]
-        public override string Note { get => base.Note; set => base.Note = value; }
+        public override string Note { get; set; }
 
         [JsonPropertyName("course")]
         public int Course { get; set; }
@@ -26,5 +22,7 @@ namespace CityTraffic.Models.GortransPerm.FullRouteNew
         [JsonPropertyName("labelYOffset")]
         public int LabelYOffset { get; set; }
 
+        [JsonPropertyName("location")]
+        public override string Location { get; set; }
     }
 }

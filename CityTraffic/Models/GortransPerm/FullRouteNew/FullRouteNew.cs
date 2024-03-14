@@ -1,8 +1,9 @@
-﻿using System.Text.Json.Serialization;
+﻿using CityTraffic.Models.Entities;
+using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPerm.FullRouteNew
 {
-    public class RouteInfo
+    public class FullRouteNew
     {
         [JsonPropertyName("routeId")]
         public string RouteId { get; set; }

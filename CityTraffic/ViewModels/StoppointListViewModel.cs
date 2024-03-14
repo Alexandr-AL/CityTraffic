@@ -16,6 +16,6 @@ namespace CityTraffic.ViewModels
         }
 
         [ObservableProperty]
-        private ObservableCollection<Stoppoint> _stoppoints;
+        private ObservableCollection<EntityStoppoint> _stoppoints;
     }
 }

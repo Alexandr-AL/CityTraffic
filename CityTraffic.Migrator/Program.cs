@@ -1,5 +1,4 @@
 ﻿using CityTraffic.DAL;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace CityTraffic.Migrator;
