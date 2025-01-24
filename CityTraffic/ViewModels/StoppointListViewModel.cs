@@ -1,6 +1,7 @@
 ﻿using CityTraffic.DAL;
 using CityTraffic.Models.Entities;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 
 namespace CityTraffic.ViewModels
@@ -17,5 +18,11 @@ namespace CityTraffic.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<EntityStoppoint> _stoppoints;
+
+        [RelayCommand]
+        private async Task FavoritesChanged()
+        {
+            await Shell.Current.DisplayAlert("test", "test FavoritesChanged", "OK");
+        }
     }
 }
