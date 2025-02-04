@@ -2,16 +2,16 @@
 
 namespace CityTraffic.Models.GortransPerm.RouteTypesTree
 {
-    public class Child : Base.TransportRoute
+    public class Child
     {
         [JsonPropertyName("routeId")]
-        public override string RouteId { get; set; }
+        public string RouteId { get; set; }
 
         [JsonPropertyName("routeNumber")]
-        public override string RouteNumber { get; set; }
+        public string RouteNumber { get; set; }
 
         [JsonPropertyName("routeTypeId")]
-        public override int RouteTypeId { get; set; }
+        public int RouteTypeId { get; set; }
 
         [JsonPropertyName("icon")]
         public string Icon { get; set; }
@@ -20,7 +20,7 @@ namespace CityTraffic.Models.GortransPerm.RouteTypesTree
         public bool IsLazy { get; set; }
 
         [JsonPropertyName("title")]
-        public override string Title { get; set; }
+        public string Title { get; set; }
 
         [JsonPropertyName("nodeType")]
         public string NodeType { get; set; }

@@ -1,5 +1,4 @@
-﻿using CityTraffic.Models.Entities;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPerm.FullRouteNew
 {
@@ -9,10 +8,10 @@ namespace CityTraffic.Models.GortransPerm.FullRouteNew
         public string RouteId { get; set; }
 
         [JsonPropertyName("fwdStoppoints")]
-        public List<FwdStoppoint> FwdStoppoints { get; set; }
+        public List<TransportStoppoint> FwdStoppoints { get; set; }
 
         [JsonPropertyName("bkwdStoppoints")]
-        public List<BkwdStoppoint> BkwdStoppoints { get; set; }
+        public List<TransportStoppoint> BkwdStoppoints { get; set; }
 
         [JsonPropertyName("twoStoppoints")]
         public List<object> TwoStoppoints { get; set; }

@@ -1,5 +1,5 @@
 ﻿using CityTraffic.Models.Entities;
-using CityTraffic.Services;
+using CityTraffic.Services.GortransPerm;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -7,7 +7,12 @@ namespace CityTraffic.DAL
 {
     public class CityTrafficDB : DbContext
     {
-        public CityTrafficDB(DbContextOptions<CityTrafficDB> options) : base(options) { }
+        private readonly GortransPermAPI _gortransPermAPI;
+
+        public CityTrafficDB(DbContextOptions<CityTrafficDB> options, GortransPermAPI gortransPermAPI) : base(options)
+        {
+            _gortransPermAPI = gortransPermAPI;
+        }
 
         public DbSet<EntityTransportRoute> TransportRoutes {get;set;}
         public DbSet<EntityStoppoint> Stoppoints { get;set;}
@@ -45,7 +50,8 @@ namespace CityTraffic.DAL
 
             if (!TransportRoutes.Any())
             {
-                var allTransportRoutes = await GortransPermAPI.GetAllTransportRoutes();
+                IEnumerable<Models.GortransPerm.RouteTypesTree.Child> allTransportRoutes = await _gortransPermAPI.GetAllTransportRoutes();
+
                 foreach (var item in allTransportRoutes)
                 {
                     TransportRoutes.Add(new EntityTransportRoute
@@ -60,7 +66,7 @@ namespace CityTraffic.DAL
 
                 if (!Stoppoints.Any())
                 {
-                    var allStoppoints = await GortransPermAPI.GetAllStoppoints(allTransportRoutes);
+                    List<Models.GortransPerm.FullRouteNew.TransportStoppoint> allStoppoints = await _gortransPermAPI.GetAllStoppoints(allTransportRoutes);
                     foreach (var item in allStoppoints)
                     {
                         Stoppoints.Add(new EntityStoppoint
@@ -82,11 +88,11 @@ namespace CityTraffic.DAL
 
         public async Task<(int, double)> UpdateDB()
         {
-            var timer = new Stopwatch();
+            Stopwatch timer = new Stopwatch();
             timer.Start();
 
             /*Update TransportRoutes*/
-            var transportRoutesNew = await GortransPermAPI.GetAllTransportRoutes();
+            IEnumerable<Models.GortransPerm.RouteTypesTree.Child> transportRoutesNew = await _gortransPermAPI.GetAllTransportRoutes();
 
             List<string> routesId = new(TransportRoutes.Select(tr => tr.RouteId).ToList());
 
@@ -96,7 +102,7 @@ namespace CityTraffic.DAL
                 {
                     routesId.Remove(newItem.RouteId);
 
-                    var transportRoute = TransportRoutes.Single(tr => tr.RouteId == newItem.RouteId);
+                    EntityTransportRoute transportRoute = TransportRoutes.Single(tr => tr.RouteId == newItem.RouteId);
 
                     if (newItem.Equals(transportRoute)) continue;
 
@@ -116,9 +122,9 @@ namespace CityTraffic.DAL
             if (routesId.Count > 0)
                 foreach (var routeId in routesId)
                     TransportRoutes.Remove(TransportRoutes.Single(tr => tr.RouteId == routeId));
-            
+
             /*Update Stoppoints*/
-            var stoppointsNew = await GortransPermAPI.GetAllStoppoints(transportRoutesNew);
+            List<Models.GortransPerm.FullRouteNew.TransportStoppoint> stoppointsNew = await _gortransPermAPI.GetAllStoppoints(transportRoutesNew);
 
             List<int> stoppointsId = new(Stoppoints.Select(sp => sp.StoppointId).ToList());
 
@@ -128,7 +134,7 @@ namespace CityTraffic.DAL
                 {
                     stoppointsId.Remove(newItem.StoppointId);
 
-                    var stoppoint = Stoppoints.Single(sp => sp.StoppointId == newItem.StoppointId);
+                    EntityStoppoint stoppoint = Stoppoints.Single(sp => sp.StoppointId == newItem.StoppointId);
 
                     if (newItem.Equals(stoppoint)) continue;
 

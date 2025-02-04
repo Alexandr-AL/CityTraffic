@@ -1,14 +1,14 @@
 ﻿namespace CityTraffic.Models.Entities
 {
-    public class EntityStoppoint : Base.Stoppoint
+    public class EntityStoppoint
     {
-        //public override int StoppointId { get; set; }
+        public int StoppointId { get; set; }
 
-        //public override string StoppointName { get; set; }
+        public string StoppointName { get; set; }
 
-        //public override string Location { get; set; }
+        public string Location { get; set; }
 
-        //public override string Note { get; set; }
+        public string Note { get; set; }
 
         public bool FavoriteStoppoint { get; set; }
 

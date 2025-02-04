@@ -1,4 +1,5 @@
 ﻿using CityTraffic.DAL;
+using CityTraffic.Services.DialogService;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -9,7 +10,7 @@ namespace CityTraffic.ViewModels
     {
         private readonly CityTrafficDB _dB;
 
-        public MainPageViewModel(CityTrafficDB dB)
+        public MainPageViewModel(CityTrafficDB dB, IDialogService dialogService) : base(dialogService)
         {
             _dB = dB;
             //FavoritesTR = new(_dB.FavoritesTransportRoutes);

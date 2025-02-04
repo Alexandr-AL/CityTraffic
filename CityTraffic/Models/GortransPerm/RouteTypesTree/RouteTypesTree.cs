@@ -1,5 +1,4 @@
-﻿using CityTraffic.Models.Entities;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace CityTraffic.Models.GortransPerm.RouteTypesTree
 {

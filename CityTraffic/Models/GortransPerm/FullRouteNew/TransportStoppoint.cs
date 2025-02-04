@@ -2,16 +2,16 @@
 
 namespace CityTraffic.Models.GortransPerm.FullRouteNew
 {
-    public class FwdStoppoint : Base.Stoppoint
+    public class TransportStoppoint
     {
         [JsonPropertyName("stoppointId")]
-        public override int StoppointId { get; set; }
+        public int StoppointId { get; set; }
 
         [JsonPropertyName("stoppointName")]
-        public override string StoppointName { get; set; }
+        public string StoppointName { get; set; }
 
         [JsonPropertyName("note")]
-        public override string Note { get; set; }
+        public string Note { get; set; }
 
         [JsonPropertyName("course")]
         public int Course { get; set; }
@@ -23,6 +23,6 @@ namespace CityTraffic.Models.GortransPerm.FullRouteNew
         public int LabelYOffset { get; set; }
 
         [JsonPropertyName("location")]
-        public override string Location { get; set; }
+        public string Location { get; set; }
     }
 }
