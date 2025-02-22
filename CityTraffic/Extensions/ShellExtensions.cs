@@ -4,42 +4,49 @@ namespace CityTraffic.Extensions
 {
     public static class ShellExtensions
     {
+        private static Popup _popup;
+
         public static Task DisplayActivityIndicator(this Page page, string message)
         {
-            ActivityIndicator activityIndicator = new ActivityIndicator();
-
-            Label label = new Label() 
+            _popup = new Popup
             {
-                Text = message,
-                FontSize = 14,
-                HorizontalOptions = LayoutOptions.Center
-            };
-
-            VerticalStackLayout stackLayout = new VerticalStackLayout()
-            {
-                Children = { activityIndicator, label },
-                VerticalOptions = LayoutOptions.Center,
-                HorizontalOptions = LayoutOptions.Center,
-                BackgroundColor = Colors.White,
-                Padding = 20,
-                Spacing = 10
-            };
-
-            Popup popup = new Popup()
-            {
-                Content = stackLayout,
+                Content = new VerticalStackLayout
+                {
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = message,
+                            FontSize = 14,
+                            HorizontalOptions = LayoutOptions.Center
+                        },
+                        new ActivityIndicator
+                        {
+                            Color = Colors.OrangeRed,
+                            IsRunning = true,
+                            HorizontalOptions = LayoutOptions.Center
+                        }
+                    },
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    BackgroundColor = Colors.White,
+                    Padding = new Thickness(0, 35)
+                },
                 Color = Colors.Transparent,
                 CanBeDismissedByTappingOutsideOfPopup = false
             };
 
-            return Shell.Current.ShowPopupAsync(popup);
+            return Shell.Current.ShowPopupAsync(_popup);
         }
 
         public static Task HideActivityIndicator(this Page page)
         {
             if (Shell.Current.CurrentPage is null) return Task.CompletedTask;
 
-            return Shell.Current?.Navigation?.PopModalAsync();
+            if (_popup is null) return Task.CompletedTask;
+
+            return _popup?.CloseAsync();
+            //return Shell.Current?.Navigation?.PopModalAsync();
         }
     }
 }

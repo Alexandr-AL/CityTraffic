@@ -1,20 +1,23 @@
 ﻿namespace CityTraffic.Models.Entities
 {
-    public class EntityTransportRoute
+    public class TransportRouteEntity
     {
         public string RouteId { get; set; }
 
-        public string RouteNumber { get; set; }
+        public string RouteNumber { get; set; } = string.Empty;
 
         public int RouteTypeId { get; set; }
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
-        public bool FavoriteTransportRoute { get; set; }
+        public bool IsFavorite { get; set; }
+
+        public List<StoppointEntity> Stoppoints { get; set; } = [];
+
 
         public override bool Equals(object obj)
         {
-            if (obj == null || obj is not EntityTransportRoute other) return false;
+            if (obj == null || obj is not TransportRouteEntity other) return false;
 
             return RouteId == other.RouteId
                 && RouteNumber == other.RouteNumber

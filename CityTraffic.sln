@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraffic", "CityTraffic\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CityTraffic.Migrator", "CityTraffic.Migrator\CityTraffic.Migrator.csproj", "{65446D83-1D7F-4045-95BE-ABD1A20089D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CityTraffic.Tests.Unit", "CityTraffic.Tests.Unit\CityTraffic.Tests.Unit.csproj", "{48BC4A1A-70C0-4E94-BC02-14C4633E15C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,6 +25,10 @@ Global
 		{65446D83-1D7F-4045-95BE-ABD1A20089D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{65446D83-1D7F-4045-95BE-ABD1A20089D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{65446D83-1D7F-4045-95BE-ABD1A20089D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48BC4A1A-70C0-4E94-BC02-14C4633E15C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48BC4A1A-70C0-4E94-BC02-14C4633E15C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48BC4A1A-70C0-4E94-BC02-14C4633E15C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48BC4A1A-70C0-4E94-BC02-14C4633E15C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

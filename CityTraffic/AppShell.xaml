@@ -12,8 +12,10 @@
     <Shell.TitleView>
         <HorizontalStackLayout>
 
-            <Button Command="{Binding UpdateDbCommand}" Text="Update DB" />
+            <Button Command="{Binding InitCommand}" Text="Init DB" />
 
+            <Button Command="{Binding UpdateCommand}" Text="Update DB" />
+            
             <Button Command="{Binding TestAPICommand}" Text="Test API" />
 
         </HorizontalStackLayout>

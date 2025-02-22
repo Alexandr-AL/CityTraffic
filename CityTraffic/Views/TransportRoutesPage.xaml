@@ -12,7 +12,7 @@
 
         <CollectionView.ItemTemplate>
 
-            <DataTemplate x:DataType="model:EntityTransportRoute">
+            <DataTemplate x:DataType="model:TransportRouteEntity">
 
                 <SwipeView>
                     <!--<SwipeView.LeftItems>

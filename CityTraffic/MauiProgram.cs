@@ -1,12 +1,16 @@
 ﻿using CityTraffic.DAL;
+using CityTraffic.Infrastructure.GortransPermApi;
+using CityTraffic.Services;
+using CityTraffic.Services.DataSyncService;
 using CityTraffic.Services.DialogService;
-using CityTraffic.Services.GortransPerm;
+using CityTraffic.Services.ErrorHandler;
 using CityTraffic.ViewModels;
 using CityTraffic.Views;
 using CommunityToolkit.Maui;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
 using Polly;
+using System.Net;
 
 namespace CityTraffic;
 
@@ -31,24 +35,30 @@ public static class MauiProgram
 
         builder.Services.AddSingleton<FavoritesPage>();
 
-		builder.Services.AddHttpClient<GortransPermAPI>();
-
 		builder.Services.AddSingleton<IDialogService, DialogService>();
 
+		builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
+
+        builder.Services.AddSingleton<IDataSyncService, DataSyncService>();
+
+        builder.Services.AddHttpClient<GortransPermApi>()
+						.AddResilienceHandler("GtpApiHandler", b =>
+						{
+							b.AddRetry(new HttpRetryStrategyOptions()
+							{
+								MaxRetryAttempts = 3,
+								Delay = TimeSpan.FromSeconds(3),
+								ShouldHandle = args => ValueTask.FromResult(
+									args.Outcome.Exception is GortransPermApiException { StatusCode: HttpStatusCode.RequestTimeout}),
+							})
+							.AddTimeout(TimeSpan.FromSeconds(10));
+						});
+
 		string connectionString = $"Data Source = {GetDbPath()}CityTraffic.db";
-		builder.Services.AddSqlite<CityTrafficDB>(connectionString);
+		builder.Services.AddSqlite<CityTrafficDB>(connectionString, 
+												  optionsAction: optAct => optAct.EnableSensitiveDataLogging());
 
-		builder.Services.AddResiliencePipeline("retry-pipeline", pollyBuilder =>
-		{
-			pollyBuilder.AddRetry(new Polly.Retry.RetryStrategyOptions()
-			{
-				MaxRetryAttempts = 3,
-				Delay = TimeSpan.FromSeconds(2),
-				ShouldHandle = args => ValueTask.FromResult(
-					args.Outcome.Exception is GortransPermException { StatusCode: System.Net.HttpStatusCode.RequestTimeout })
-			});
-		});
-
+		
 		
 #if DEBUG
 		builder.Logging.AddDebug();

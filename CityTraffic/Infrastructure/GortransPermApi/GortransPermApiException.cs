@@ -1,8 +1,8 @@
 ﻿using System.Net;
 
-namespace CityTraffic.Services.GortransPerm
+namespace CityTraffic.Infrastructure.GortransPermApi
 {
-    public class GortransPermException : Exception
+    public class GortransPermApiException : Exception
     {
         public HttpStatusCode StatusCode { get; }
 
@@ -10,13 +10,13 @@ namespace CityTraffic.Services.GortransPerm
 
         public string ResponseContent { get; }
 
-        public GortransPermException() { }
+        public GortransPermApiException() { }
 
-        public GortransPermException(string message) : base(message) { }
+        public GortransPermApiException(string message) : base(message) { }
 
-        public GortransPermException(string message, Exception innerException) : base(message, innerException) { }
+        public GortransPermApiException(string message, Exception innerException) : base(message, innerException) { }
 
-        public GortransPermException(string message,
+        public GortransPermApiException(string message,
                                      HttpStatusCode httpStatusCode,
                                      string requestUrl,
                                      string responseContent,
@@ -25,15 +25,6 @@ namespace CityTraffic.Services.GortransPerm
             StatusCode = httpStatusCode;
             RequestUrl = requestUrl;
             ResponseContent = responseContent;
-        }
-
-        public string UserMessage()
-        {
-            return $"""
-                GortransPermException: {Message}
-                StatusCode: {StatusCode} ({(int)StatusCode})
-                RequsetUrl: {RequestUrl}
-                """;
         }
 
         public override string ToString()

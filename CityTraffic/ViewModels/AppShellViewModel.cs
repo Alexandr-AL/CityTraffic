@@ -1,7 +1,8 @@
 ﻿using CityTraffic.DAL;
+using CityTraffic.Infrastructure.GortransPermApi;
+using CityTraffic.Services.DataSyncService;
 using CityTraffic.Services.DialogService;
-using CityTraffic.Services.GortransPerm;
-using CommunityToolkit.Mvvm.ComponentModel;
+using CityTraffic.Services.ErrorHandler;
 using CommunityToolkit.Mvvm.Input;
 
 namespace CityTraffic.ViewModels
@@ -9,52 +10,67 @@ namespace CityTraffic.ViewModels
     public partial class AppShellViewModel : Base.ViewModel
     {
         private readonly CityTrafficDB _dB;
-        private readonly GortransPermAPI _gortransPermAPI;
+        private readonly GortransPermApi _gortransPermAPI;
+        private readonly IDataSyncService _dataSyncService;
 
-        public AppShellViewModel(CityTrafficDB dB, GortransPermAPI gortransPermAPI, IDialogService dialogService) : base(dialogService)
+        public AppShellViewModel(CityTrafficDB dB, 
+                                 GortransPermApi gortransPermAPI, 
+                                 IErrorHandler errorHandler, 
+                                 IDialogService dialogService,
+                                 IDataSyncService dataSyncService) : base(errorHandler, dialogService)
         {
             _dB = dB;
             _gortransPermAPI = gortransPermAPI;
+            _dataSyncService = dataSyncService;
             //_ = Init();
         }
 
         [RelayCommand]
-        private async Task UpdateDb()
-        {
-            var result = await _dB.UpdateDB();
-
-            await Shell.Current.DisplayAlert($"Updated {result.Item1} entities in {result.Item2} sec.",
-                                             $"Count Transport routes {_dB.TransportRoutes.Count()}\n" +
-                                             $"Count Stoppoints {_dB.Stoppoints.Count()}", "OK");
-        }
-
         private async Task Init()
         {
-            var result = await _dB.InitDB();
+            CancellationToken ct = new CancellationTokenSource().Token;
+            (int count, int sec) result = default;
 
-            if (result > 0)
-                await Shell.Current.DisplayAlert("", $"DB Initialized\nEntities added:{result}", "OK");
+            await SafeExecuteAsync(async () =>
+            {
+                result = await _dataSyncService.InitializeDatabaseAsync(ct);
+            },"Инициализация БД...");
+
+            await _dialogService.ShowPopupAsync($"Добавлено новых объектов: {result.count}\nза {result.sec} сек.");
+        }
+
+        [RelayCommand]
+        private async Task Update()
+        {
+            CancellationToken ct = new CancellationTokenSource().Token;
+            (int count, int sec) result = default;
+
+            await SafeExecuteAsync(async () =>
+            {
+                result = await _dataSyncService.UpdateDatabaseAsync(ct);
+            },"Обновление данных...");
+
+            await _dialogService.ShowPopupAsync($"Обновлено объектов: {result.count}\nза {result.sec} сек.");
         }
 
         [RelayCommand]
         private async Task TestAPI()
         {
-            try
-            {
-                var result = await _gortransPermAPI.GetArrivalTimesVehicles((50200).ToString());
+            Models.GortransPerm.ArrivalTimesVehicles.ArrivalTimesVehicles result = new();
 
-                await Shell.Current.DisplayAlert(result.RouteTypes[0].Routes[0].RouteId,
-                                                 result.RouteTypes[0].Routes[0].Vehicles[0].ArrivalTime,
-                                                 "OK");
-            }
-            catch (GortransPermException ex)
+            await SafeExecuteAsync(async () =>
             {
-                await Shell.Current.DisplayAlert(ex.StatusCode.ToString(), ex.UserMessage(), "OK");
-            }
-            catch (Exception ex)
-            {
-                await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
-            }
+                result = await _gortransPermAPI.GetArrivalTimesVehiclesAsync(6101);
+            },"Загрузка данных...");
+
+            if (result.RouteTypes.Count > 0)
+                await _dialogService.ShowPopupAsync($"""
+                    {result.RouteTypes[0].RouteTypeName}
+                    Маршрут № {result.RouteTypes[0].Routes[0].RouteNumber}
+                    Время прибытия: {result.RouteTypes[0].Routes[0].Vehicles[0].ArrivalTime}
+                    Прибытие через: {result.RouteTypes[0].Routes[0].Vehicles[0].ArrivalMinutes} мин.
+                    """);
+            else await _dialogService.ShowPopupAsync("Данные отсутствуют.");
         }
     }
 }
