@@ -19,15 +19,12 @@
         {
             if (obj == null || obj is not TransportRouteEntity other) return false;
 
-            return RouteId == other.RouteId
-                && RouteNumber == other.RouteNumber
-                && Title == other.Title
-                && RouteTypeId == other.RouteTypeId;
+            return RouteId == other.RouteId &&
+                   RouteNumber == other.RouteNumber &&
+                   RouteTypeId == other.RouteTypeId &&
+                   Title == other.Title;
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => RouteId.GetHashCode();
     }
 }

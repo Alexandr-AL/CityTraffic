@@ -26,9 +26,9 @@ namespace CityTraffic.ViewModels.Base
 
                 if (!string.IsNullOrEmpty(loadingMessage))
                 {
-                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
                     {
-                        _dialogService.ShowLoadingAsync(loadingMessage);
+                        await _dialogService.ShowLoadingAsync(loadingMessage);
                     });
                 }
 

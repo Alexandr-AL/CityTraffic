@@ -4,10 +4,10 @@
     {
         Task ShowAlertAsync(string title, string message);
 
-        Task ShowPopupAsync(string message);
+        Task ShowPopupAsync(string message, CancellationToken token = default);
 
-        Task ShowLoadingAsync(string message);
+        Task ShowLoadingAsync(string message, CancellationToken token = default);
 
-        Task HideLoadingAsync();
+        Task HideLoadingAsync(CancellationToken token = default);
     }
 }

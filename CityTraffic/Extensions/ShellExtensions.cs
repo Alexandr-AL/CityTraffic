@@ -6,7 +6,7 @@ namespace CityTraffic.Extensions
     {
         private static Popup _popup;
 
-        public static Task DisplayActivityIndicator(this Page page, string message)
+        public static Task DisplayActivityIndicator(this Page page, string message, CancellationToken token = default)
         {
             _popup = new Popup
             {
@@ -36,16 +36,16 @@ namespace CityTraffic.Extensions
                 CanBeDismissedByTappingOutsideOfPopup = false
             };
 
-            return Shell.Current.ShowPopupAsync(_popup);
+            return Shell.Current.ShowPopupAsync(_popup, token);
         }
 
-        public static Task HideActivityIndicator(this Page page)
+        public static Task HideActivityIndicator(this Page page, CancellationToken token = default)
         {
             if (Shell.Current.CurrentPage is null) return Task.CompletedTask;
 
             if (_popup is null) return Task.CompletedTask;
 
-            return _popup?.CloseAsync();
+            return _popup?.CloseAsync(token: token);
             //return Shell.Current?.Navigation?.PopModalAsync();
         }
     }

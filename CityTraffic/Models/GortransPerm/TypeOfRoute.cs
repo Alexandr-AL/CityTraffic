@@ -1,6 +1,6 @@
 ﻿namespace CityTraffic.Models.GortransPerm
 {
-    public enum RouteType
+    public enum TypeOfRoute
     {
         Bus = 0,
         Tram = 2,

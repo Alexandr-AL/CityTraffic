@@ -20,17 +20,7 @@ namespace CityTraffic.ViewModels
         [ObservableProperty]
         private ObservableCollection<TransportRouteEntity> _transportRoutes;
 
-        //[RelayCommand]
-        //private void AddToFavorites(TransportRoute transportRoute)
-        //{
-        //    var tr = _dB.TransportRoutes.Include(tr => tr.FavoritesTransportRoute).SingleOrDefault(e => e.Id == transportRoute.Id);
-
-        //    tr.FavoritesTransportRoute = new()
-        //    {
-        //        TransportRouteId = tr.Id,
-        //        TransportRoute = tr
-        //    };
-        //    _dB.SaveChanges();
-        //}
+        [ObservableProperty]
+        private bool _favorite;
     }
 }

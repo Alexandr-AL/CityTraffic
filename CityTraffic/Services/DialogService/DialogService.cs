@@ -14,7 +14,7 @@ namespace CityTraffic.Services.DialogService
             });
         }
 
-        public async Task ShowPopupAsync(string message)
+        public async Task ShowPopupAsync(string message, CancellationToken token = default)
         {
             Popup popup = new Popup
             {
@@ -39,23 +39,23 @@ namespace CityTraffic.Services.DialogService
 
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                return await Shell.Current.ShowPopupAsync(popup);
+                return await Shell.Current.ShowPopupAsync(popup, token);
             });
         }
 
-        public async Task ShowLoadingAsync(string message)
+        public async Task ShowLoadingAsync(string message, CancellationToken token = default)
         {
-            await MainThread.InvokeOnMainThreadAsync(async () =>
+            await MainThread.InvokeOnMainThreadAsync(() =>
             {
-                await Shell.Current?.CurrentPage?.DisplayActivityIndicator(message);
+                Shell.Current?.CurrentPage?.DisplayActivityIndicator(message, token);
             });
         }
 
-        public async Task HideLoadingAsync()
+        public async Task HideLoadingAsync(CancellationToken token = default)
         {
             await MainThread.InvokeOnMainThreadAsync(async () =>
             {
-                await Shell.Current?.CurrentPage?.HideActivityIndicator();
+                await Shell.Current?.CurrentPage?.HideActivityIndicator(token);
             });
         }
     }

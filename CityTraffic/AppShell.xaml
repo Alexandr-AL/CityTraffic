@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<Shell
-    x:Class="CityTraffic.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:CityTraffic"
-    xmlns:views="clr-namespace:CityTraffic.Views"
-    xmlns:vm="clr-namespace:CityTraffic.ViewModels"
-    x:DataType="vm:AppShellViewModel"
-    Shell.FlyoutBehavior="Disabled">
+<Shell x:Class="CityTraffic.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:local="clr-namespace:CityTraffic"
+       xmlns:views="clr-namespace:CityTraffic.Views"
+       xmlns:vm="clr-namespace:CityTraffic.ViewModels"
+       x:DataType="vm:AppShellViewModel"
+       Shell.FlyoutBehavior="Disabled">
 
     <Shell.TitleView>
-        <HorizontalStackLayout>
+        <HorizontalStackLayout HorizontalOptions="End">
 
-            <Button Command="{Binding InitCommand}" Text="Init DB" />
+            <Button Command="{Binding TestAPICommand}"
+                    HorizontalOptions="End"
+                    Text="Test API" />
 
-            <Button Command="{Binding UpdateCommand}" Text="Update DB" />
-            
-            <Button Command="{Binding TestAPICommand}" Text="Test API" />
+            <Button Command="{Binding UpdateDatabaseCommand}"
+                    HorizontalOptions="End"
+                    Text="Update DB" />
 
         </HorizontalStackLayout>
     </Shell.TitleView>
 
     <TabBar>
-        <ShellContent Title="Home" ContentTemplate="{DataTemplate views:MainPage}" />
+        <ShellContent Title="Home"
+                      ContentTemplate="{DataTemplate views:MainPage}" />
 
-        <Tab Title="Lists">
-            <ShellContent Title="Transport Routes List" ContentTemplate="{DataTemplate views:TransportRoutesPage}" />
+        <ShellContent Title="Transport Routes"
+                      ContentTemplate="{DataTemplate views:TransportRoutesPage}" />
 
-            <ShellContent Title="Stoppoints List" ContentTemplate="{DataTemplate views:StoppointListPage}" />
-        </Tab>
+        <ShellContent Title="Stoppoints"
+                      ContentTemplate="{DataTemplate views:StoppointListPage}" />
 
-        <ShellContent Title="Favorites" ContentTemplate="{DataTemplate views:FavoritesPage}" />
+        <ShellContent Title="Favorites"
+                      ContentTemplate="{DataTemplate views:FavoritesPage}" />
     </TabBar>
 
 </Shell>

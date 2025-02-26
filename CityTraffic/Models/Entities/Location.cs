@@ -10,9 +10,9 @@ namespace CityTraffic.Models.Entities
 
         public Location(string coordinates)
         {
-            (double Lat, double Lon) =  ParseCoordinates(coordinates);
-            Latitude = Lat;
-            Longitude = Lon;
+            (double lat, double lon) =  ParseCoordinates(coordinates);
+            Latitude = lat;
+            Longitude = lon;
         }
 
         public Location(double latitude, double longitude)
@@ -32,8 +32,8 @@ namespace CityTraffic.Models.Entities
             if (matches.Count != 2)
                 return default;
 
-            double lat = default;
-            double lon = default;
+            double lat;
+            double lon;
 
             try
             {

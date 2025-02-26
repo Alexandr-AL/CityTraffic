@@ -1,4 +1,3 @@
-using CityTraffic.DAL;
 using CityTraffic.ViewModels;
 
 namespace CityTraffic.Views;

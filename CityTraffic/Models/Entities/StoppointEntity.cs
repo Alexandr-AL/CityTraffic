@@ -20,12 +20,12 @@
             if (obj == null || obj is not StoppointEntity other) return false;
 
             return StoppointId == other.StoppointId &&
-                   StoppointName == other.StoppointName;
+                   StoppointName == other.StoppointName &&
+                   Location.Latitude == other.Location.Latitude &&
+                   Location.Longitude == other.Location.Longitude&&
+                   Note == other.Note;
         }
 
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        public override int GetHashCode() => StoppointId.GetHashCode();
     }
 }
