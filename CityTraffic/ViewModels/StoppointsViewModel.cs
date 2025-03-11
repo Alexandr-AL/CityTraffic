@@ -12,37 +12,37 @@ using System.Collections.ObjectModel;
 
 namespace CityTraffic.ViewModels
 {
-    public partial class TransportRoutesViewModel : Base.ViewModel
+    public partial class StoppointsViewModel : Base.ViewModel
     {
         private readonly CityTrafficDB _dB;
         private readonly IFavoriteService _favoriteService;
 
-        public TransportRoutesViewModel(CityTrafficDB dB, 
-                                        IErrorHandler errorHandler,
-                                        IFavoriteService favoriteService) : base(errorHandler)
+        public StoppointsViewModel(CityTrafficDB dB,
+                                   IErrorHandler errorHandler,
+                                   IFavoriteService favoriteService) : base(errorHandler)
         {
             _dB = dB;
             _favoriteService = favoriteService;
 
-            LoadRoutes();
+            LoadStoppoints();
 
             WeakReferenceMessenger.Default.Register<DataSyncServiceChangedMessage>(this, DataSyncServiceMessageHandler);
         }
 
         [ObservableProperty]
-        public partial ObservableCollection<TransportRouteEntity> TransportRoutes { get; set; }
+        public partial ObservableCollection<StoppointEntity> Stoppoints { get; set; }
 
         [RelayCommand]
-        public async Task ToggleFavorite(TransportRouteEntity route)
+        public async Task ToggleFavorite(StoppointEntity stoppoint)
         {
             CancellationToken token = new CancellationTokenSource().Token;
-            await _favoriteService.ToggleFavoriteAsync(route, token);
+            await _favoriteService.ToggleFavoriteAsync(stoppoint, token);
         }
 
         [RelayCommand]
-        public void LoadRoutes()
+        public void LoadStoppoints()
         {
-            TransportRoutes = _dB.TransportRoutes.OrderBy(t => t.RouteId).Include(tr => tr.Stoppoints).ToObservableCollection();
+            Stoppoints = _dB.Stoppoints.OrderBy(s => s.StoppointId).Include(s => s.Routes).ToObservableCollection();
         }
 
         private void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
@@ -51,7 +51,7 @@ namespace CityTraffic.ViewModels
 
             if (message.Value == 0) return;
 
-            LoadRoutes();
+            LoadStoppoints();
         }
     }
 }

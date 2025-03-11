@@ -1,23 +1,21 @@
-﻿using CityTraffic.Infrastructure.GortransPermApi;
-using CityTraffic.Services.DialogService;
+﻿using CityTraffic.Extensions;
+using CityTraffic.Infrastructure.GortransPermApi;
 using System.Net;
 
 namespace CityTraffic.Services.ErrorHandler
 {
     public class ErrorHandler : IErrorHandler
     {
-        private readonly IDialogService _dialogService;
 
-        public ErrorHandler(IDialogService dialogService)
+        public ErrorHandler()
         {
-            _dialogService = dialogService;
         }
 
         public async Task HandleErrorAsync(Exception ex)
         {
             string userMessage = GetUserMessage(ex);
 
-            await _dialogService.ShowAlertAsync("Ошибка", userMessage);
+            await Shell.Current.DisplayPopupAsync($"Error\n{userMessage}");
         }
 
         public string GetUserMessage(Exception ex)

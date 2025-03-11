@@ -8,55 +8,6 @@
              Title="City Traffic"
              x:DataType="vm:MainPageViewModel">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-        </Grid.ColumnDefinitions>
-
-        <!--<CollectionView Grid.Row="0"
-                        Grid.Column="0"
-                        ItemsSource="{Binding }">
-
-            <CollectionView.ItemTemplate>
-
-                <DataTemplate x:DataType="model:FavoritesTransportRoute">
-
-                    <Frame>
-                        <FlyoutBase.ContextFlyout>
-                            <MenuFlyout>
-                                <MenuFlyoutItem Clicked="MenuFlyoutItem_Clicked"
-                                                CommandParameter="{Binding .}"
-                                                Text="Del"/>
-                            </MenuFlyout>
-                        </FlyoutBase.ContextFlyout>
-                        <Label Text="{Binding TransportRoute.Title}"/>
-                    </Frame>
-
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>-->
-
-        <!--<CollectionView Grid.Row="0"
-                        Grid.Column="1"
-                        ItemsSource="{Binding FavoritesSp}">
-
-            <CollectionView.ItemTemplate>
-
-                <DataTemplate x:DataType="model:FavoritesStoppoint">
-
-                    <Frame>
-                        <Label Text="{Binding Stoppoint.StoppointName}"/>
-                    </Frame>
-
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>-->
-
-    </Grid>
-
+    <Label HorizontalOptions="Center"
+           Text="Main Page" />
 </ContentPage>

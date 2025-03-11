@@ -2,6 +2,7 @@
 using CityTraffic.Infrastructure.GortransPermApi;
 using CityTraffic.Models.Entities;
 using CityTraffic.Models.GortransPerm.FullRouteNew;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -18,12 +19,10 @@ namespace CityTraffic.Services.DataSyncService
             _api = api;
         }
 
-        public async Task<(int, int)> InitializeDatabaseAsync(CancellationToken token = default)
+        private async Task<(int, int)> InitializeDatabaseAsync(CancellationToken token = default)
         {
             Stopwatch timer = new Stopwatch();
             timer.Start();
-
-            await _dB.Database.MigrateAsync(token);
 
             if (await _dB.TransportRoutes.AnyAsync(token) || await _dB.Stoppoints.AnyAsync(token))
             {
@@ -73,11 +72,18 @@ namespace CityTraffic.Services.DataSyncService
 
             timer.Stop();
 
-            return (await _dB.SaveChangesAsync(token), timer.Elapsed.Seconds);
+            (int countUpdated, int seconds) result = (await _dB.SaveChangesAsync(token), timer.Elapsed.Seconds);
+
+            WeakReferenceMessenger.Default.Send(new DataSyncServiceChangedMessage(result.countUpdated));
+
+            return result;
         }
 
         public async Task<(int, int)> UpdateDatabaseAsync(CancellationToken token = default)
         {
+            ArgumentNullException.ThrowIfNull(_dB);
+            ArgumentNullException.ThrowIfNull(_api);
+
             await _dB.Database.MigrateAsync(token);
 
             if (!await _dB.TransportRoutes.AnyAsync(token) && !await _dB.Stoppoints.AnyAsync(token))
@@ -159,7 +165,11 @@ namespace CityTraffic.Services.DataSyncService
 
             timer.Stop();
 
-            return (await _dB.SaveChangesAsync(token), timer.Elapsed.Seconds);
+            (int countUpdated, int seconds) result = (await _dB.SaveChangesAsync(token), timer.Elapsed.Seconds);
+
+            WeakReferenceMessenger.Default.Send(new DataSyncServiceChangedMessage(result.countUpdated));
+
+            return result;
         }
 
         private static StoppointEntity MapToStoppointEntity(TransportStoppoint transportStoppoint) => new StoppointEntity

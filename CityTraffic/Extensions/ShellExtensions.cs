@@ -4,11 +4,36 @@ namespace CityTraffic.Extensions
 {
     public static class ShellExtensions
     {
-        private static Popup _popup;
-
-        public static Task DisplayActivityIndicator(this Page page, string message, CancellationToken token = default)
+        public static async Task DisplayPopupAsync(this Page page, string message, CancellationToken token = default)
         {
-            _popup = new Popup
+            Popup _popup = new Popup
+            {
+                Content = new VerticalStackLayout
+                {
+                    Children =
+                    {
+                        new Label
+                        {
+                            Text = message,
+                            FontSize = 14,
+                            HorizontalOptions = LayoutOptions.Center,
+                            BackgroundColor = Colors.LightCyan
+                        }
+                    },
+                    VerticalOptions = LayoutOptions.Center,
+                    HorizontalOptions = LayoutOptions.Center,
+                    BackgroundColor = Colors.White
+                },
+                Color = Colors.Transparent,
+                CanBeDismissedByTappingOutsideOfPopup = true
+            };
+
+            await Shell.Current.ShowPopupAsync(_popup, token);
+        }
+
+        public static async Task DisplayPopupAsync(this UraniumUI.Dialogs.IDialogService dialogService, string message, CancellationToken token = default)
+        {
+            Popup _popup = new Popup
             {
                 Content = new VerticalStackLayout
                 {
@@ -19,34 +44,17 @@ namespace CityTraffic.Extensions
                             Text = message,
                             FontSize = 14,
                             HorizontalOptions = LayoutOptions.Center
-                        },
-                        new ActivityIndicator
-                        {
-                            Color = Colors.OrangeRed,
-                            IsRunning = true,
-                            HorizontalOptions = LayoutOptions.Center
                         }
                     },
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
-                    BackgroundColor = Colors.White,
-                    Padding = new Thickness(0, 35)
+                    BackgroundColor = Colors.White
                 },
                 Color = Colors.Transparent,
-                CanBeDismissedByTappingOutsideOfPopup = false
+                CanBeDismissedByTappingOutsideOfPopup = true
             };
 
-            return Shell.Current.ShowPopupAsync(_popup, token);
-        }
-
-        public static Task HideActivityIndicator(this Page page, CancellationToken token = default)
-        {
-            if (Shell.Current.CurrentPage is null) return Task.CompletedTask;
-
-            if (_popup is null) return Task.CompletedTask;
-
-            return _popup?.CloseAsync(token: token);
-            //return Shell.Current?.Navigation?.PopModalAsync();
+            await Shell.Current.ShowPopupAsync(_popup, token);
         }
     }
 }

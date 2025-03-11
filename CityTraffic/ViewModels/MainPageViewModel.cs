@@ -1,22 +1,12 @@
-﻿using CityTraffic.DAL;
-using CityTraffic.Services.DataSyncService;
-using CityTraffic.Services.DialogService;
-using CityTraffic.Services.ErrorHandler;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CityTraffic.Services.ErrorHandler;
 
 namespace CityTraffic.ViewModels
 {
 
     public partial class MainPageViewModel : Base.ViewModel
     {
-        private readonly CityTrafficDB _dB;
-
-        public MainPageViewModel(CityTrafficDB dB, 
-                                 IErrorHandler errorHandler, 
-                                 IDialogService dialogService) : base(errorHandler, dialogService)
+        public MainPageViewModel(IErrorHandler errorHandler) : base(errorHandler)
         {
-            _dB = dB;
         }
     }
 }

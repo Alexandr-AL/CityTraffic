@@ -4,7 +4,6 @@ using CityTraffic.Infrastructure.GortransPermApi;
 using CityTraffic.Models.GortransPerm;
 using CityTraffic.Models.GortransPerm.StoppointTimetable;
 using CityTraffic.Services.DataSyncService;
-using CityTraffic.Services.DialogService;
 using CityTraffic.Services.ErrorHandler;
 using CommunityToolkit.Mvvm.Input;
 using System.Text;
@@ -19,9 +18,8 @@ namespace CityTraffic.ViewModels
 
         public AppShellViewModel(GortransPermApi gortransPermAPI,
                                  CityTrafficDB dB,
-                                 IErrorHandler errorHandler, 
-                                 IDialogService dialogService,
-                                 IDataSyncService dataSyncService) : base(errorHandler, dialogService)
+                                 IErrorHandler errorHandler,
+                                 IDataSyncService dataSyncService) : base(errorHandler)
         {
             _gortransPermAPI = gortransPermAPI;
             _dB = dB;
@@ -39,13 +37,13 @@ namespace CityTraffic.ViewModels
                 result = await _dataSyncService.UpdateDatabaseAsync(ct);
             },"Обновление данных...");
 
-            await _dialogService.ShowPopupAsync($"Обновлено объектов: {result.count}\nза {result.sec} сек.");
+            await Shell.Current.DisplayPopupAsync($"Обновлено объектов: {result.count}\nза {result.sec} сек.");
         }
 
         [RelayCommand]
         private async Task TestAPI()
         {
-            //await GetArrivalTimesVehicles(6101);
+            await GetArrivalTimesVehicles(6101);
             //await GetStoppointTimetable(6101);
             //await GetTimeTableH("07", 6101);
             //await GetSearch("1");
@@ -65,7 +63,7 @@ namespace CityTraffic.ViewModels
 
             if (result is null)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
@@ -75,7 +73,7 @@ namespace CityTraffic.ViewModels
             {
                 popupMessage += $"({board.BoardId}){board.StopName}\nLat:{board.Lat} Lon:{board.Lon}\n\n";
             }
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage);
         }
 
         private async Task GetNewsLinks()
@@ -89,7 +87,7 @@ namespace CityTraffic.ViewModels
 
             if (result is null)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
@@ -100,7 +98,7 @@ namespace CityTraffic.ViewModels
                 popupMessage += $"{newsLink.ItemNumber} - {newsLink.PublishedDate}\n{newsLink.Title}\n{newsLink.Url}\n\n";
             }
 
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage);
         }
 
         private async Task GetMovingAutos(string routeId)
@@ -114,7 +112,7 @@ namespace CityTraffic.ViewModels
 
             if (result is null)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
@@ -125,7 +123,7 @@ namespace CityTraffic.ViewModels
                 popupMessage += $"№{auto.RouteNumber}\n{auto.GosNom}\n{auto.T}\n";
             }
 
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage);
         }
 
         private async Task GetSearch(string query)
@@ -139,7 +137,7 @@ namespace CityTraffic.ViewModels
 
             if (result is null)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
@@ -153,7 +151,7 @@ namespace CityTraffic.ViewModels
                     : $"({searchResult.Stoppoint.Note})\n{searchResult.Stoppoint.Routes}\n";
             }
 
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage);
         }
 
         private async Task GetTimeTableH(string routeId, int stoppointId)
@@ -167,7 +165,7 @@ namespace CityTraffic.ViewModels
 
             if (result is null)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
@@ -185,7 +183,7 @@ namespace CityTraffic.ViewModels
                                     """;
                 }
             }
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage);
         }
 
         private async Task GetStoppointTimetable(int stoppointId)
@@ -197,25 +195,21 @@ namespace CityTraffic.ViewModels
                 result = (await _gortransPermAPI.GetStoppointTimetableAsync(stoppointId)).ToList();
             }, "Загрузка данных...");
 
-            if (result is null)
-            {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
-                return;
-            }
-
             Models.Entities.StoppointEntity stoppoint = await _dB.Stoppoints.FindAsync(stoppointId);
 
-            string popupMessage = $"{stoppoint.StoppointName} ({stoppoint.Note})";
+            StringBuilder popupMessage = new();
+
+            popupMessage.Append($"{stoppoint.StoppointName} ({stoppoint.Note})");
 
             foreach (var item in result)
             {
-                popupMessage += $"""
+                popupMessage.Append($"""
 
                                 №{item.RouteNumber}: {item.RouteName} - {item.ScheduledTime}
-                                """;
+                                """);
             }
 
-            await _dialogService.ShowPopupAsync(popupMessage);
+            await Shell.Current.DisplayPopupAsync(popupMessage.ToString());
         }
 
         private async Task GetArrivalTimesVehicles(int stoppointId)
@@ -227,26 +221,20 @@ namespace CityTraffic.ViewModels
                 result = await _gortransPermAPI.GetArrivalTimesVehiclesAsync(stoppointId);
             }, "Загрузка данных...");
 
-            if (result is null)
-            {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
-                return;
-            }
-
             Models.Entities.StoppointEntity stoppoint = await _dB.Stoppoints.FindAsync(stoppointId);
 
             Models.GortransPerm.ArrivalTimesVehicles.RouteType busRoute =
-                result.RouteTypes.SingleOrDefault(rt => rt.RouteTypeId == (int)TypeOfRoute.Bus);
+                result.RouteTypes?.SingleOrDefault(rt => rt.RouteTypeId == (int)TypeOfRoute.Bus);
 
             if (busRoute is null || busRoute.Routes.Count == 0)
             {
-                await _dialogService.ShowPopupAsync("Данные отсутствуют.");
+                await Shell.Current.DisplayPopupAsync("Данные отсутствуют.");
                 return;
             }
 
-            StringBuilder popupMessage = new();
+            StringBuilder userMessage = new();
 
-            popupMessage.Append(stoppoint is not null
+            userMessage.Append(stoppoint is not null
                 ? $"{stoppoint.StoppointName} ({stoppoint.Note})\n{busRoute.RouteTypeName}"
                 : busRoute.RouteTypeName);
 
@@ -257,10 +245,10 @@ namespace CityTraffic.ViewModels
                 foreach (var vehicle in route.Vehicles)
                     arrival.Append($"{vehicle.ArrivalTime.SkipLast(3).ToString(0)} ({vehicle.ArrivalMinutes}м.) ");
 
-                popupMessage.Append($"\n№{route.RouteNumber}: {arrival}");
+                userMessage.Append($"\n№{route.RouteNumber}: {arrival}");
             }
 
-            await _dialogService.ShowPopupAsync(popupMessage.ToString());
+            await Shell.Current.DisplayPopupAsync(userMessage.ToString());
         }
     }
 }

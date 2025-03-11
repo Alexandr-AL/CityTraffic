@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="CityTraffic.Views.TransportRoutesPage"
+<ContentPage x:Class="CityTraffic.Views.StoppointsPage"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
              xmlns:model="clr-namespace:CityTraffic.Models.Entities"
              xmlns:vm="clr-namespace:CityTraffic.ViewModels"
-             Title="TransportRoutesPage"
-             x:DataType="vm:TransportRoutesViewModel">
+             Title="StoppointListPage"
+             x:DataType="vm:StoppointsViewModel">
 
-    <RefreshView Command="{Binding LoadRoutesCommand}">
+    <RefreshView Command="{Binding LoadStoppointsCommand}">
 
         <CollectionView Margin="5,0"
-                        ItemsSource="{Binding TransportRoutes}">
+                        ItemsSource="{Binding Stoppoints}">
+
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout ItemSpacing="1"
                                    Orientation="Vertical" />
@@ -19,22 +20,27 @@
 
             <CollectionView.ItemTemplate>
 
-                <DataTemplate x:DataType="model:TransportRouteEntity">
+                <DataTemplate x:DataType="model:StoppointEntity">
 
-                    <Border>
+                    <Border BackgroundColor="{StaticResource Cyan300Accent}">
 
                         <Grid ColumnDefinitions="*"
                               RowDefinitions="*">
 
-                            <Label HorizontalOptions="Start"
-                                   Text="{Binding Title}"
-                                   VerticalOptions="Center" />
+                            <HorizontalStackLayout HorizontalOptions="Start"
+                                                   VerticalOptions="Center">
+                                <Label Text="{Binding StoppointName}" />
+
+                                <Label Margin="5,0,0,0"
+                                       Text="{Binding Note, StringFormat='({0})'}" />
+
+                            </HorizontalStackLayout>
 
                             <Button Margin="0,0,10,0"
                                     Padding="8,0,8,3"
                                     BackgroundColor="Transparent"
                                     BorderColor="Transparent"
-                                    Command="{Binding Path=ToggleFavoriteCommand, Source={RelativeSource AncestorType={x:Type vm:TransportRoutesViewModel}}, x:DataType=vm:TransportRoutesViewModel}"
+                                    Command="{Binding Path=ToggleFavoriteCommand, Source={RelativeSource AncestorType={x:Type vm:StoppointsViewModel}}, x:DataType=vm:StoppointsViewModel}"
                                     CommandParameter="{Binding .}"
                                     HorizontalOptions="End"
                                     VerticalOptions="Center">

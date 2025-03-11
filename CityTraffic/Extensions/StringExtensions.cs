@@ -4,7 +4,7 @@ namespace CityTraffic.Extensions
 {
     public static class StringExtensions
     {
-        [OverloadResolutionPriority(1)]
+        [OverloadResolutionPriority(100)]
         public static string ToString(this IEnumerable<char> chars, int uselessParam)
         {
             return new string(chars.ToArray());

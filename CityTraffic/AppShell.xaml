@@ -3,37 +3,59 @@
        xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:CityTraffic"
+       xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
        xmlns:views="clr-namespace:CityTraffic.Views"
        xmlns:vm="clr-namespace:CityTraffic.ViewModels"
        x:DataType="vm:AppShellViewModel"
        Shell.FlyoutBehavior="Disabled">
 
     <Shell.TitleView>
-        <HorizontalStackLayout HorizontalOptions="End">
+        <Grid>
 
             <Button Command="{Binding TestAPICommand}"
-                    HorizontalOptions="End"
-                    Text="Test API" />
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
 
-            <Button Command="{Binding UpdateDatabaseCommand}"
-                    HorizontalOptions="End"
-                    Text="Update DB" />
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialOutlined"
+                                     Glyph="{x:Static m:MaterialOutlined.Done_outline}" />
+                </Button.ImageSource>
+            </Button>
 
-        </HorizontalStackLayout>
+            <Button Margin="0,0,3,0"
+                    Padding="10,0"
+                    Command="{Binding UpdateDatabaseCommand}"
+                    HorizontalOptions="End"
+                    VerticalOptions="Center">
+
+                <Button.ImageSource>
+                    <FontImageSource FontFamily="MaterialOutlined"
+                                     Glyph="{x:Static m:MaterialOutlined.System_update_alt}"
+                                     Color="{x:StaticResource Blue100Accent}" />
+                </Button.ImageSource>
+            </Button>
+
+        </Grid>
     </Shell.TitleView>
 
     <TabBar>
-        <ShellContent Title="Home"
-                      ContentTemplate="{DataTemplate views:MainPage}" />
+        <Tab Title="Избранное">
+            <ShellContent Title="Остановки"
+                          ContentTemplate="{DataTemplate views:FavoriteStoppointsPage}" />
 
-        <ShellContent Title="Transport Routes"
+            <ShellContent Title="Маршруты"
+                          ContentTemplate="{DataTemplate views:FavoriteTransportRoutesPage}" />
+        </Tab>
+
+
+        <ShellContent Title="Маршруты"
                       ContentTemplate="{DataTemplate views:TransportRoutesPage}" />
 
-        <ShellContent Title="Stoppoints"
-                      ContentTemplate="{DataTemplate views:StoppointListPage}" />
+        <ShellContent Title="Остановки"
+                      ContentTemplate="{DataTemplate views:StoppointsPage}" />
 
-        <ShellContent Title="Favorites"
-                      ContentTemplate="{DataTemplate views:FavoritesPage}" />
+        <!--<ShellContent Title="Home"
+                      ContentTemplate="{DataTemplate views:MainPage}" />-->
     </TabBar>
 
 </Shell>

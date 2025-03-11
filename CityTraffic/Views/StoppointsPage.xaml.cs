@@ -2,9 +2,9 @@ using CityTraffic.ViewModels;
 
 namespace CityTraffic.Views;
 
-public partial class StoppointListPage : ContentPage
+public partial class StoppointsPage : ContentPage
 {
-	public StoppointListPage(StoppointListViewModel stoppointListVM)
+	public StoppointsPage(StoppointsViewModel stoppointListVM)
 	{
 		InitializeComponent();
 		BindingContext = stoppointListVM;

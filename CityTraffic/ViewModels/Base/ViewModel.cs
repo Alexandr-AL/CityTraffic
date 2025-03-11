@@ -1,18 +1,16 @@
-﻿using CityTraffic.Services.DialogService;
-using CityTraffic.Services.ErrorHandler;
+﻿using CityTraffic.Services.ErrorHandler;
 using CommunityToolkit.Mvvm.ComponentModel;
+using UraniumUI.Dialogs.Mopups;
 
 namespace CityTraffic.ViewModels.Base
 {
     public abstract partial class ViewModel: ObservableObject
     {
         private readonly IErrorHandler _errorHandler;
-        protected readonly IDialogService _dialogService;
 
-        protected ViewModel(IErrorHandler errorHandler, IDialogService dialogService)
+        protected ViewModel(IErrorHandler errorHandler)
         {
             _errorHandler = errorHandler;
-            _dialogService = dialogService;
         }
 
         [ObservableProperty]
@@ -20,29 +18,32 @@ namespace CityTraffic.ViewModels.Base
 
         protected async Task SafeExecuteAsync(Func<Task> action, string loadingMessage = null)
         {
-            try
+            if (string.IsNullOrWhiteSpace(loadingMessage))
             {
-                IsBusy = true;
-
-                if (!string.IsNullOrEmpty(loadingMessage))
+                try
                 {
-                    await MainThread.InvokeOnMainThreadAsync(async () =>
-                    {
-                        await _dialogService.ShowLoadingAsync(loadingMessage);
-                    });
+                    await action();
                 }
+                catch (Exception ex)
+                {
+                    await _errorHandler.HandleErrorAsync(ex);
+                }
+            }
+            else
+            {
+                using (await Shell.Current.DisplayProgressAsync("", loadingMessage))
+                {
+                    try
+                    {
+                        await action();
+                    }
+                    catch (Exception ex)
+                    {
+                        await _errorHandler.HandleErrorAsync(ex);
+                    }
+                }
+            }
 
-                await action();
-            }
-            catch (Exception ex)
-            {
-                await _errorHandler.HandleErrorAsync(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-                await _dialogService.HideLoadingAsync();
-            }
         }
     }
 }

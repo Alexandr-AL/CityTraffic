@@ -1,16 +1,17 @@
 ﻿using CityTraffic.DAL;
 using CityTraffic.Infrastructure.GortransPermApi;
-using CityTraffic.Services;
 using CityTraffic.Services.DataSyncService;
-using CityTraffic.Services.DialogService;
 using CityTraffic.Services.ErrorHandler;
+using CityTraffic.Services.FavoriteService;
 using CityTraffic.ViewModels;
 using CityTraffic.Views;
 using CommunityToolkit.Maui;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Logging;
+using Mopups.Hosting;
 using Polly;
 using System.Net;
+using UraniumUI;
 
 namespace CityTraffic;
 
@@ -21,25 +22,31 @@ public static class MauiProgram
 		var builder = MauiApp.CreateBuilder();
 		builder
 			.UseMauiApp<App>()
-			.UseMauiCommunityToolkit()
+            .UseMauiCommunityToolkit()
+			.UseUraniumUI()
+			.UseUraniumUIMaterial()
+			.ConfigureMopups()
 			.ConfigureFonts(fonts =>
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+				fonts.AddMaterialSymbolsFonts();
 			});
 
 		builder.Services.AddSingleton<AppShell, AppShellViewModel>();
 		builder.Services.AddSingleton<MainPage, MainPageViewModel>();
-		builder.Services.AddSingleton<StoppointListPage, StoppointListViewModel>();
+		builder.Services.AddSingleton<StoppointsPage, StoppointsViewModel>();
         builder.Services.AddSingleton<TransportRoutesPage, TransportRoutesViewModel>();
+        builder.Services.AddSingleton<FavoriteTransportRoutesPage, FavoriteTransportRoutesViewModel>();
+        builder.Services.AddSingleton<FavoriteStoppointsPage, FavoriteStoppointsViewModel>();
 
-        builder.Services.AddSingleton<FavoritesPage>();
-
-		builder.Services.AddSingleton<IDialogService, DialogService>();
-
-		builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
+        builder.Services.AddSingleton<IErrorHandler, ErrorHandler>();
 
         builder.Services.AddSingleton<IDataSyncService, DataSyncService>();
+
+		builder.Services.AddSingleton<IFavoriteService, FavoriteService>();
+
+		builder.Services.AddMopupsDialogs();
 
         builder.Services.AddHttpClient<GortransPermApi>()
 						.AddResilienceHandler("GtpApiHandler", b =>
@@ -58,8 +65,6 @@ public static class MauiProgram
 		builder.Services.AddSqlite<CityTrafficDB>(connectionString, 
 												  optionsAction: optAct => optAct.EnableSensitiveDataLogging());
 
-		
-		
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif

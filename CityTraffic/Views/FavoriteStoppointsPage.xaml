@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="CityTraffic.Views.FavoriteStoppointsPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:CityTraffic.Infrastructure.Converters"
+             xmlns:m="clr-namespace:UraniumUI.Icons.MaterialSymbols;assembly=UraniumUI.Icons.MaterialSymbols"
+             xmlns:material="http://schemas.enisn-projects.io/dotnet/maui/uraniumui/material"
+             xmlns:model="clr-namespace:CityTraffic.Models.Entities"
+             xmlns:u="http://schemas.enisn-projects.io/dotnet/maui/uraniumui"
+             xmlns:vm="clr-namespace:CityTraffic.ViewModels"
+             Title="FavoriteStoppointsPage"
+             x:DataType="vm:FavoriteStoppointsViewModel">
+
+    <RefreshView>
+        <CollectionView Margin="5,0"
+                        ItemsSource="{Binding FavoriteStoppoints}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout ItemSpacing="1"
+                                   Orientation="Vertical" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+
+                <DataTemplate x:DataType="model:StoppointEntity">
+
+                    <SwipeView>
+
+                        <SwipeView.LeftItems>
+                            <SwipeItems>
+                                <SwipeItemView>
+                                    <Image Source="delete.png" />
+                                </SwipeItemView>
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+
+                        <u:ExpanderView>
+                            <u:ExpanderView.Header>
+                                <Border BackgroundColor="{StaticResource Cyan300Accent}">
+                                    <Grid ColumnDefinitions="*"
+                                          RowDefinitions="*">
+
+                                        <VerticalStackLayout>
+                                            <Label Text="{Binding StoppointName}" />
+                                            <Label Text="{Binding Note}" />
+                                        </VerticalStackLayout>
+
+                                        <Button Margin="0,0,30,0"
+                                                Padding="0,0"
+                                                BackgroundColor="Transparent"
+                                                BorderColor="Transparent"
+                                                Command="{Binding Path=ArrivalTimesVehiclesCommand, Source={RelativeSource AncestorType={x:Type vm:FavoriteStoppointsViewModel}}, x:DataType=vm:FavoriteStoppointsViewModel}"
+                                                CommandParameter="{Binding StoppointId}"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Center">
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="MaterialOutlined"
+                                                                 Glyph="{x:Static m:MaterialOutlined.View_timeline}"
+                                                                 Color="{StaticResource Gray200}" />
+                                            </Button.ImageSource>
+                                        </Button>
+
+                                        <Button Margin="0"
+                                                Padding="0,0,0,15"
+                                                BackgroundColor="Transparent"
+                                                BorderColor="Transparent"
+                                                Command="{Binding Path=ToggleFavoriteStoppointCommand, Source={RelativeSource AncestorType={x:Type vm:FavoriteStoppointsViewModel}}, x:DataType=vm:FavoriteStoppointsViewModel}"
+                                                CommandParameter="{Binding .}"
+                                                HorizontalOptions="End"
+                                                VerticalOptions="Start">
+
+                                            <Button.ImageSource>
+                                                <FontImageSource FontFamily="MaterialOutlined"
+                                                                 Glyph="{x:Static m:MaterialOutlined.Close}"
+                                                                 Size="15"
+                                                                 Color="{StaticResource Gray300}" />
+                                            </Button.ImageSource>
+                                        </Button>
+                                    </Grid>
+                                </Border>
+                            </u:ExpanderView.Header>
+
+                            <CollectionView Margin="5,0,20,0"
+                                            ItemsSource="{Binding Routes}">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout ItemSpacing="0.5"
+                                                       Orientation="Vertical" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="model:TransportRouteEntity">
+                                        <Border>
+                                            <Grid ColumnDefinitions="*"
+                                                  RowDefinitions="*">
+
+                                                <VerticalStackLayout>
+                                                    <Label Margin="0,5"
+                                                           Text="{Binding Title}" />
+                                                </VerticalStackLayout>
+
+                                                <Button Margin="0,0,0,0"
+                                                        Padding="0,0,0,3"
+                                                        BackgroundColor="Transparent"
+                                                        BorderColor="Transparent"
+                                                        Command="{Binding Path=ToggleRouteCommand, Source={RelativeSource AncestorType={x:Type vm:FavoriteStoppointsViewModel}}, x:DataType=vm:FavoriteStoppointsViewModel}"
+                                                        CommandParameter="{Binding .}"
+                                                        HorizontalOptions="End"
+                                                        VerticalOptions="Center">
+
+                                                    <Button.ImageSource>
+                                                        <FontImageSource FontFamily="MaterialOutlined"
+                                                                         Glyph="{x:Static m:MaterialOutlined.Star}"
+                                                                         Color="{Binding IsFavorite, Converter={StaticResource BoolToFontImageSourceColorConverter}}" />
+                                                    </Button.ImageSource>
+                                                </Button>
+
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                        </u:ExpanderView>
+                    </SwipeView>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

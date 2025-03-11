@@ -1,6 +1,9 @@
-﻿namespace CityTraffic.Models.Entities
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace CityTraffic.Models.Entities
 {
-    public class TransportRouteEntity
+    public class TransportRouteEntity : INotifyPropertyChanged
     {
         public string RouteId { get; set; }
 
@@ -10,9 +13,15 @@
 
         public string Title { get; set; } = string.Empty;
 
-        public bool IsFavorite { get; set; }
+        public bool IsFavorite { get; set { field = value; OnPropertyChanged(); } }
 
         public List<StoppointEntity> Stoppoints { get; set; } = [];
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) => 
+            PropertyChanged?.Invoke(this, new(propertyName));
 
 
         public override bool Equals(object obj)
