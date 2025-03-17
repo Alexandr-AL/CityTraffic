@@ -176,7 +176,7 @@ namespace CityTraffic.Services.DataSyncService
         {
             StoppointId = transportStoppoint.StoppointId,
             StoppointName = transportStoppoint.StoppointName,
-            Location = new Models.Entities.Location(transportStoppoint.Location),
+            Location = new Models.Entities.StoppointLocation(transportStoppoint.Location),
             Note = transportStoppoint.Note
         };
     }

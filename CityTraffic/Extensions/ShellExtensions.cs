@@ -17,14 +17,14 @@ namespace CityTraffic.Extensions
                             Text = message,
                             FontSize = 14,
                             HorizontalOptions = LayoutOptions.Center,
-                            BackgroundColor = Colors.LightCyan
+                            Margin = new Thickness(15)
                         }
                     },
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
                     BackgroundColor = Colors.White
                 },
-                Color = Colors.Transparent,
+                Color = Colors.WhiteSmoke,
                 CanBeDismissedByTappingOutsideOfPopup = true
             };
 
@@ -43,14 +43,15 @@ namespace CityTraffic.Extensions
                         {
                             Text = message,
                             FontSize = 14,
-                            HorizontalOptions = LayoutOptions.Center
+                            HorizontalOptions = LayoutOptions.Center,
+                            Margin = new Thickness(15)
                         }
                     },
                     VerticalOptions = LayoutOptions.Center,
                     HorizontalOptions = LayoutOptions.Center,
                     BackgroundColor = Colors.White
                 },
-                Color = Colors.Transparent,
+                Color = Colors.WhiteSmoke,
                 CanBeDismissedByTappingOutsideOfPopup = true
             };
 

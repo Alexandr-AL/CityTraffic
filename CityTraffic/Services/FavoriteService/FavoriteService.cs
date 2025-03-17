@@ -31,7 +31,7 @@ namespace CityTraffic.Services.FavoriteService
                         await ToggleFavoriteStoppointAsync(st, token);
                         break;
 
-                    default: throw new ArgumentException($"Неверный тип аргумента: {nameof(favoriteItem)}");
+                    default: throw new ArgumentException($"Неверный тип аргумента: {typeof(T)}");
                 }
             }
             catch (Exception ex)

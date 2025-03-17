@@ -35,7 +35,7 @@ namespace CityTraffic.DAL
                 e.Property(s => s.Location)
                  .HasColumnName("location")
                  .HasConversion(loc => $"{loc.Latitude} {loc.Longitude}", 
-                                loc => new Models.Entities.Location(loc));
+                                loc => new StoppointLocation(loc));
 
                 e.HasMany(s => s.Routes)
                  .WithMany(tr => tr.Stoppoints);

@@ -3,19 +3,19 @@ using System.Text.RegularExpressions;
 
 namespace CityTraffic.Models.Entities
 {
-    public class Location
+    public class StoppointLocation
     {
         public double Latitude { get; private set; }
         public double Longitude { get; private set; }
 
-        public Location(string coordinates)
+        public StoppointLocation(string coordinates)
         {
             (double lat, double lon) =  ParseCoordinates(coordinates);
             Latitude = lat;
             Longitude = lon;
         }
 
-        public Location(double latitude, double longitude)
+        public StoppointLocation(double latitude, double longitude)
         {
             Latitude = latitude;
             Longitude = longitude;

@@ -12,16 +12,6 @@
     <Shell.TitleView>
         <Grid>
 
-            <Button Command="{Binding TestAPICommand}"
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center">
-
-                <Button.ImageSource>
-                    <FontImageSource FontFamily="MaterialOutlined"
-                                     Glyph="{x:Static m:MaterialOutlined.Done_outline}" />
-                </Button.ImageSource>
-            </Button>
-
             <Button Margin="0,0,3,0"
                     Padding="10,0"
                     Command="{Binding UpdateDatabaseCommand}"

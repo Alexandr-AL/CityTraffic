@@ -35,8 +35,7 @@ namespace CityTraffic.ViewModels
         [RelayCommand]
         public async Task ToggleFavorite(TransportRouteEntity route)
         {
-            CancellationToken token = new CancellationTokenSource().Token;
-            await _favoriteService.ToggleFavoriteAsync(route, token);
+            await _favoriteService.ToggleFavoriteAsync(route);
         }
 
         [RelayCommand]

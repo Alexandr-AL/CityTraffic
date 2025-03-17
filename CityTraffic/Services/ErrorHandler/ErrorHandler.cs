@@ -1,24 +1,28 @@
 ﻿using CityTraffic.Extensions;
 using CityTraffic.Infrastructure.GortransPermApi;
 using System.Net;
+using UraniumUI.Dialogs;
+using UraniumUI.Dialogs.Mopups;
 
 namespace CityTraffic.Services.ErrorHandler
 {
     public class ErrorHandler : IErrorHandler
     {
+        private readonly IDialogService _dialogService;
 
-        public ErrorHandler()
+        public ErrorHandler(IDialogService dialogService)
         {
+            _dialogService = dialogService;
         }
 
-        public async Task HandleErrorAsync(Exception ex)
+        public virtual async Task HandleErrorAsync(Exception ex)
         {
             string userMessage = GetUserMessage(ex);
 
-            await Shell.Current.DisplayPopupAsync($"Error\n{userMessage}");
+            await _dialogService.DisplayPopupAsync($"Error\n{userMessage}");
         }
 
-        public string GetUserMessage(Exception ex)
+        private string GetUserMessage(Exception ex)
         {
             return ex switch
             {
@@ -33,6 +37,35 @@ namespace CityTraffic.Services.ErrorHandler
 
                 _ => $"Произошла непредвиденная ошибка:\n{ex.Message}"
             };
+        }
+
+        public virtual async Task SafeExecuteAsync(Func<Task> action, string loadingMessage = null)
+        {
+            if (string.IsNullOrWhiteSpace(loadingMessage))
+            {
+                try
+                {
+                    await action();
+                }
+                catch (Exception ex)
+                {
+                    await HandleErrorAsync(ex);
+                }
+            }
+            else
+            {
+                using (await _dialogService.DisplayProgressAsync("", loadingMessage))
+                {
+                    try
+                    {
+                        await action();
+                    }
+                    catch (Exception ex)
+                    {
+                        await HandleErrorAsync(ex);
+                    }
+                }
+            }
         }
     }
 }

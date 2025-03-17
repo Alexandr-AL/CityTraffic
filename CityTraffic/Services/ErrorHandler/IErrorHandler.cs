@@ -4,6 +4,6 @@
     {
         Task HandleErrorAsync(Exception ex);
 
-        string GetUserMessage(Exception ex);
+        Task SafeExecuteAsync(Func<Task> action, string loadingMessage = null);
     }
 }

@@ -9,7 +9,7 @@ namespace CityTraffic.Models.Entities
 
         public string StoppointName { get; set; } = string.Empty;
 
-        public Location Location { get; set; }
+        public StoppointLocation Location { get; set; }
 
         public string Note { get; set; } = string.Empty;
 

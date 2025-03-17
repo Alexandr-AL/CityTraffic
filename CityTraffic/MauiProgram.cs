@@ -3,6 +3,7 @@ using CityTraffic.Infrastructure.GortransPermApi;
 using CityTraffic.Services.DataSyncService;
 using CityTraffic.Services.ErrorHandler;
 using CityTraffic.Services.FavoriteService;
+using CityTraffic.Services.ShowDataGortransService;
 using CityTraffic.ViewModels;
 using CityTraffic.Views;
 using CommunityToolkit.Maui;
@@ -45,6 +46,8 @@ public static class MauiProgram
         builder.Services.AddSingleton<IDataSyncService, DataSyncService>();
 
 		builder.Services.AddSingleton<IFavoriteService, FavoriteService>();
+
+		builder.Services.AddSingleton<IShowDataGortransService, ShowDataGortransService>();
 
 		builder.Services.AddMopupsDialogs();
 
