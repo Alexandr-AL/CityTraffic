@@ -1,14 +1,7 @@
-﻿using CityTraffic.DAL;
-using CityTraffic.Extensions;
-using CityTraffic.Infrastructure.GortransPermApi;
-using CityTraffic.Models.GortransPerm;
-using CityTraffic.Models.GortransPerm.StoppointTimetable;
+﻿using CityTraffic.Extensions;
 using CityTraffic.Services.DataSyncService;
 using CityTraffic.Services.ErrorHandler;
-using CityTraffic.Services.ShowDataGortransService;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
 using UraniumUI.Dialogs;
 
 namespace CityTraffic.ViewModels

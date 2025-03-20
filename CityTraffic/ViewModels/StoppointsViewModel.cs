@@ -44,13 +44,16 @@ namespace CityTraffic.ViewModels
             Stoppoints = _dB.Stoppoints.OrderBy(s => s.StoppointId).Include(s => s.Routes).ToObservableCollection();
         }
 
-        private void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
+        private async void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
         {
-            ArgumentNullException.ThrowIfNull(message);
+            await _errorHandler.SafeExecuteAsync(async () =>
+            {
+                ArgumentNullException.ThrowIfNull(message);
 
-            if (message.Value == 0) return;
+                if (message.Value == 0) return;
 
-            LoadStoppoints();
+                LoadStoppoints();
+            });
         }
     }
 }

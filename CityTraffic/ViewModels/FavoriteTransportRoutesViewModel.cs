@@ -11,6 +11,7 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using UraniumUI.Dialogs;
 
 namespace CityTraffic.ViewModels
@@ -97,29 +98,35 @@ namespace CityTraffic.ViewModels
             });
         }
 
-        private void FavoriteRouteMessageHandler(object recipient, FavoriteRouteChangedMessage message)
+        private async void FavoriteRouteMessageHandler(object recipient, FavoriteRouteChangedMessage message)
         {
-            if (IsBusy) return;
+            await _errorHandler.SafeExecuteAsync(async () =>
+            {
+                if (IsBusy) return;
 
-            ArgumentNullException.ThrowIfNull(message);
+                ArgumentNullException.ThrowIfNull(message);
 
-            TransportRouteEntity tr = _dB.TransportRoutes.FirstOrDefault(t => t.RouteId == message.Value);
+                TransportRouteEntity tr = _dB.TransportRoutes.FirstOrDefault(t => t.RouteId == message.Value);
 
-            ArgumentNullException.ThrowIfNull(tr);
+                ArgumentNullException.ThrowIfNull(tr);
 
-            if (tr.IsFavorite)
-                FavoriteTransportRoutes.Insert(0, tr);
-            else
-                FavoriteTransportRoutes.Remove(tr);
+                if (tr.IsFavorite)
+                    FavoriteTransportRoutes.Insert(0, tr);
+                else
+                    FavoriteTransportRoutes.Remove(tr);
+            });
         }
 
-        private void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
+        private async void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
         {
-            ArgumentNullException.ThrowIfNull(message);
+            await _errorHandler.SafeExecuteAsync(async () =>
+            {
+                ArgumentNullException.ThrowIfNull(message);
 
-            if (message.Value == 0) return;
+                if (message.Value == 0) return;
 
-            LoadFavoriteRoutes();
+                LoadFavoriteRoutes();
+            });
         }
     }
 }

@@ -87,35 +87,41 @@ namespace CityTraffic.ViewModels
         [RelayCommand]
         public async Task ArrivalTimesVehicles(StoppointEntity stoppointEntity)
         {
-            await _errorHandler.SafeExecuteAsync(async() =>
+            await _errorHandler.SafeExecuteAsync(async () =>
             {
                 await _showDataService.ShowArrivalTimesVehicles(stoppointEntity);
             });
         }
 
-        private void FavoriteStoppointMessageHandler(object recipient, FavoriteStoppointChangedMessage message)
+        private async void FavoriteStoppointMessageHandler(object recipient, FavoriteStoppointChangedMessage message)
         {
-            if (IsBusy) return;
+            await _errorHandler.SafeExecuteAsync(async () =>
+            {
+                if (IsBusy) return;
 
-            ArgumentNullException.ThrowIfNull(message);
+                ArgumentNullException.ThrowIfNull(message);
 
-            StoppointEntity sp = _dB.Stoppoints.FirstOrDefault(s => s.StoppointId == message.Value);
+                StoppointEntity sp = _dB.Stoppoints.FirstOrDefault(s => s.StoppointId == message.Value);
 
-            ArgumentNullException.ThrowIfNull(sp);
+                ArgumentNullException.ThrowIfNull(sp);
 
-            if (sp.IsFavorite)
-                FavoriteStoppoints.Insert(0, sp);
-            else
-                FavoriteStoppoints.Remove(sp);
+                if (sp.IsFavorite)
+                    FavoriteStoppoints.Insert(0, sp);
+                else
+                    FavoriteStoppoints.Remove(sp);
+            });
         }
 
-        private void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
+        private async void DataSyncServiceMessageHandler(object recipient, DataSyncServiceChangedMessage message)
         {
-            ArgumentNullException.ThrowIfNull(message);
+            await _errorHandler.SafeExecuteAsync(async () =>
+            {
+                ArgumentNullException.ThrowIfNull(message);
 
-            if (message.Value == 0) return;
+                if (message.Value == 0) return;
 
-            LoadFavoriteStoppoints();
+                LoadFavoriteStoppoints();
+            });
         }
     }
 }
